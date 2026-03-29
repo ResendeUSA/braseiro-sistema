@@ -201,6 +201,11 @@ body::before{content:'';position:fixed;inset:0;background:
 </div>
 
 <script>
+// Auth check — redirect to login if not authenticated
+if (sessionStorage.getItem('braseiro_auth') !== 'ok') {
+  window.location.replace('index.html');
+}
+
 const SUPA_URL = 'https://mibylztsvhhhmnsoipac.supabase.co';
 const SUPA_KEY = 'sb_publishable_a7X5JlFdtqwzaE9bB5TsGg_09zvlle-';
 const supa = supabase.createClient(SUPA_URL, SUPA_KEY);

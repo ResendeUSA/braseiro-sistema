@@ -1,0 +1,18 @@
+{
+  "name": "Braseiro Premium Knives",
+  "short_name": "Braseiro",
+  "description": "Sistema de Gestão — Braseiro Premium Knives",
+  "start_url": "/braseiro-sistema/index.html",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#0a0a0a",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "Braseiro-AppIcon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Braseiro">
+<link rel="apple-touch-icon" href="Braseiro-AppIcon.png">
+<link rel="manifest" href="manifest.json">
+<title>Braseiro Premium Knives</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  
+  body {
+    background: #0a0a0a;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Rajdhani', sans-serif;
+    overflow: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: 
+      radial-gradient(ellipse 60% 50% at 50% 0%, rgba(201,168,76,.08) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 40% at 20% 80%, rgba(201,168,76,.04) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  .container {
+    width: 100%;
+    max-width: 400px;
+    padding: 40px 20px;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .logo-wrap {
+    margin-bottom: 40px;
+    animation: fadeDown .6s ease both;
+  }
+
+  .logo-wrap img {
+    width: 180px;
+    height: 180px;
+    object-fit: contain;
+  }
+
+  .login-box {
+    background: #141414;
+    border: 1px solid rgba(201,168,76,.2);
+    border-radius: 8px;
+    padding: 36px 32px;
+    animation: fadeUp .6s .15s ease both;
+  }
+
+  h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 24px;
+    font-weight: 400;
+    color: #f5f1eb;
+    margin-bottom: 6px;
+  }
+
+  .subtitle {
+    font-size: 11px;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: #6b6b6b;
+    margin-bottom: 28px;
+  }
+
+  .input-wrap {
+    position: relative;
+    margin-bottom: 16px;
+  }
+
+  .input-wrap input {
+    width: 100%;
+    background: #1e1e1e;
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 4px;
+    padding: 13px 46px 13px 16px;
+    color: #e8e4de;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 16px;
+    outline: none;
+    transition: all .2s;
+    letter-spacing: .05em;
+  }
+
+  .input-wrap input:focus {
+    border-color: rgba(201,168,76,.5);
+    background: #252525;
+  }
+
+  .toggle-pw {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #6b6b6b;
+    font-size: 16px;
+    padding: 4px;
+  }
+  .toggle-pw:hover { color: #c9a84c; }
+
+  .btn-login {
+    width: 100%;
+    padding: 14px;
+    background: #c9a84c;
+    color: #0a0a0a;
+    border: none;
+    border-radius: 4px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all .25s;
+    margin-top: 4px;
+  }
+  .btn-login:hover { background: #e8c96b; transform: translateY(-1px); }
+  .btn-login:active { transform: translateY(0); }
+
+  .error-msg {
+    display: none;
+    background: rgba(196,74,26,.1);
+    border: 1px solid rgba(196,74,26,.3);
+    border-radius: 3px;
+    padding: 10px 14px;
+    font-size: 12px;
+    color: #c44a1a;
+    margin-top: 12px;
+    text-align: left;
+  }
+
+  .footer-txt {
+    margin-top: 24px;
+    font-size: 10px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: #3a3a3a;
+  }
+
+  @keyframes fadeDown {
+    from { opacity:0; transform: translateY(-20px); }
+    to   { opacity:1; transform: translateY(0); }
+  }
+  @keyframes fadeUp {
+    from { opacity:0; transform: translateY(20px); }
+    to   { opacity:1; transform: translateY(0); }
+  }
+
+  /* Shake animation on error */
+  @keyframes shake {
+    0%,100% { transform: translateX(0); }
+    20%,60%  { transform: translateX(-8px); }
+    40%,80%  { transform: translateX(8px); }
+  }
+  .shake { animation: shake .4s ease; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="logo-wrap">
+    <img src="Braseiro-AppIcon.png" alt="Braseiro Premium Knives"
+         onerror="this.style.display='none';document.getElementById('logoFallback').style.display='block'">
+    <div id="logoFallback" style="display:none;font-family:'Cormorant Garamond',serif;font-size:32px;color:#c9a84c;font-style:italic">
+      Braseiro
+    </div>
+  </div>
+
+  <div class="login-box" id="loginBox">
+    <h2>Acesso ao Sistema</h2>
+    <p class="subtitle">Braseiro Premium Knives</p>
+
+    <div class="input-wrap">
+      <input type="password" id="pwInput" placeholder="Digite a senha"
+        onkeydown="if(event.key==='Enter')tryLogin()" autofocus>
+      <button class="toggle-pw" onclick="togglePw()" tabindex="-1">👁</button>
+    </div>
+
+    <button class="btn-login" onclick="tryLogin()">Entrar</button>
+
+    <div class="error-msg" id="errMsg">
+      ❌ Senha incorreta. Tente novamente.
+    </div>
+  </div>
+
+  <p class="footer-txt">© 2026 Braseiro Premium Knives · Sistema interno</p>
+</div>
+
+<script>
+  // ── CONFIGURE SUA SENHA AQUI ──
+  const SENHA = 'braseiro2026';
+  // ─────────────────────────────
+
+  // Check if already logged in this session
+  if (sessionStorage.getItem('braseiro_auth') === 'ok') {
+    window.location.href = 'braseiro-index.html';
+  }
+
+  function tryLogin() {
+    const input = document.getElementById('pwInput').value;
+    const err   = document.getElementById('errMsg');
+    const box   = document.getElementById('loginBox');
+
+    if (input === SENHA) {
+      sessionStorage.setItem('braseiro_auth', 'ok');
+      // Success feedback
+      document.querySelector('.btn-login').textContent = '✓ Entrando...';
+      document.querySelector('.btn-login').style.background = '#4caf7a';
+      setTimeout(() => {
+        window.location.href = 'braseiro-index.html';
+      }, 600);
+    } else {
+      err.style.display = 'block';
+      box.classList.remove('shake');
+      void box.offsetWidth; // reflow
+      box.classList.add('shake');
+      document.getElementById('pwInput').value = '';
+      document.getElementById('pwInput').focus();
+    }
+  }
+
+  function togglePw() {
+    const inp = document.getElementById('pwInput');
+    inp.type = inp.type === 'password' ? 'text' : 'password';
+  }
+</script>
+</body>
+</html>
