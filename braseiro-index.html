@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Braseiro Premium Knives — Sistema</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{
+  --black:#0a0a0a;--charcoal:#141414;--steel:#1e1e1e;--iron:#2a2a2a;
+  --ash:#6b6b6b;--silver:#a8a8a8;--light:#e8e4de;--cream:#f5f1eb;
+  --gold:#c9a84c;--gold-light:#e8c96b;--ember:#c44a1a;
+  --green:#4caf7a;--blue:#5b9cf6;--purple:#a78bfa;
+  --border:rgba(201,168,76,.2);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--black);color:var(--light);font-family:'Rajdhani',sans-serif;min-height:100vh;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px}
+body::before{content:'';position:fixed;inset:0;background:
+  radial-gradient(ellipse 80% 60% at 20% 80%,rgba(196,74,26,.07) 0%,transparent 60%),
+  radial-gradient(ellipse 60% 50% at 80% 20%,rgba(201,168,76,.06) 0%,transparent 50%);
+  pointer-events:none}
+
+.hub{position:relative;z-index:1;max-width:900px;width:100%}
+
+/* Header */
+.hub-header{text-align:center;margin-bottom:48px}
+.hub-logo{display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:20px}
+.hub-logo svg{width:48px;height:48px}
+.hub-brand{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:600;color:var(--gold);letter-spacing:.04em}
+.hub-sub{font-size:11px;letter-spacing:.25em;color:var(--ash);text-transform:uppercase;margin-top:2px}
+.hub-status{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;background:rgba(76,175,122,.08);border:1px solid rgba(76,175,122,.25);border-radius:20px;font-size:12px;color:var(--green);margin-top:12px}
+.status-dot{width:8px;height:8px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* Module grid */
+.modules{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:32px}
+
+.mod-card{background:var(--charcoal);border:1px solid var(--border);border-radius:6px;
+  padding:24px 20px;cursor:pointer;transition:all .25s;text-decoration:none;display:block;
+  position:relative;overflow:hidden}
+.mod-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;transition:opacity .2s;opacity:0}
+.mod-card:hover{border-color:var(--border);transform:translateY(-3px);box-shadow:0 16px 40px rgba(0,0,0,.5)}
+.mod-card:hover::after{opacity:1}
+
+.mod-card.m1::after{background:var(--gold)}
+.mod-card.m2::after{background:var(--green)}
+.mod-card.m3::after{background:var(--blue)}
+.mod-card.m4::after{background:var(--ember)}
+.mod-card.m5::after{background:var(--purple)}
+.mod-card.m6::after{background:var(--gold)}
+
+.mod-card:hover.m1{border-color:rgba(201,168,76,.4)}
+.mod-card:hover.m2{border-color:rgba(76,175,122,.4)}
+.mod-card:hover.m3{border-color:rgba(91,156,246,.4)}
+.mod-card:hover.m4{border-color:rgba(196,74,26,.4)}
+.mod-card:hover.m5{border-color:rgba(167,139,250,.4)}
+.mod-card:hover.m6{border-color:rgba(201,168,76,.4)}
+
+.mod-icon{font-size:32px;margin-bottom:12px}
+.mod-num{font-size:9px;letter-spacing:.2em;color:var(--ash);text-transform:uppercase;margin-bottom:6px}
+.mod-name{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--cream);margin-bottom:4px}
+.mod-desc{font-size:11px;color:var(--ash);line-height:1.5}
+.mod-arrow{position:absolute;top:20px;right:20px;color:var(--ash);font-size:16px;transition:all .2s}
+.mod-card:hover .mod-arrow{color:var(--gold);transform:translateX(3px)}
+
+/* Stats bar */
+.hub-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:4px;overflow:hidden;margin-bottom:32px}
+.hs-item{background:var(--charcoal);padding:14px 20px}
+.hs-label{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--ash)}
+.hs-value{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:600;color:var(--cream);margin-top:3px;line-height:1}
+.hs-value span{font-size:12px;color:var(--ash);font-family:'Rajdhani',sans-serif;font-weight:400}
+
+/* Footer */
+.hub-footer{text-align:center;font-size:11px;color:var(--ash);letter-spacing:.06em;display:flex;align-items:center;justify-content:center;gap:16px}
+.hf-dot{width:4px;height:4px;border-radius:50%;background:var(--ash)}
+
+/* Connection indicator */
+.conn-badge{position:fixed;top:20px;right:20px;display:flex;align-items:center;gap:7px;
+  padding:6px 14px;background:var(--charcoal);border:1px solid var(--border);border-radius:20px;font-size:11px;color:var(--ash)}
+
+.toast{position:fixed;bottom:24px;right:24px;background:var(--charcoal);border:1px solid var(--gold);border-radius:4px;padding:12px 18px;display:flex;align-items:center;gap:10px;font-size:13px;color:var(--cream);transform:translateY(20px);opacity:0;transition:all .3s;z-index:300;pointer-events:none}
+.toast.show{transform:translateY(0);opacity:1}
+
+@media(max-width:700px){
+  .modules{grid-template-columns:1fr 1fr}
+  .hub-stats{grid-template-columns:1fr 1fr}
+}
+@media(max-width:400px){
+  .modules{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="conn-badge" id="connBadge">
+  <div class="status-dot" style="background:var(--ash);animation:none" id="connDot"></div>
+  <span id="connText">Conectando...</span>
+</div>
+
+<div class="hub">
+
+  <!-- Header -->
+  <div class="hub-header">
+    <div class="hub-logo">
+      <svg viewBox="0 0 40 40" fill="none"><path d="M8 32 L28 8 L34 14 L16 36 Z" fill="none" stroke="#c9a84c" stroke-width="1.5"/><path d="M28 8 L34 14 L32 16 L26 10 Z" fill="#c9a84c" opacity="0.6"/><path d="M8 32 L12 34 L16 36 L14 32 Z" fill="#c44a1a" opacity="0.8"/><circle cx="31" cy="11" r="2" fill="#c9a84c" opacity="0.4"/></svg>
+      <div>
+        <div class="hub-brand">Braseiro Premium Knives</div>
+        <div class="hub-sub">Sistema de Gestão</div>
+      </div>
+    </div>
+    <div class="hub-status">
+      <div class="status-dot"></div>
+      <span id="statusText">Online · Dados salvos na nuvem</span>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="hub-stats">
+    <div class="hs-item"><div class="hs-label">Produtos</div><div class="hs-value" id="stModels">— <span>modelos</span></div></div>
+    <div class="hs-item"><div class="hs-label">Clientes</div><div class="hs-value" id="stClients">— <span>clientes</span></div></div>
+    <div class="hs-item"><div class="hs-label">Pedidos</div><div class="hs-value" id="stOrders">— <span>pedidos</span></div></div>
+    <div class="hs-item"><div class="hs-label">Em Estoque</div><div class="hs-value" id="stStock">— <span>peças</span></div></div>
+  </div>
+
+  <!-- Modules -->
+  <div class="modules">
+    <a class="mod-card m1" href="braseiro-cadastro-v2.html">
+      <div class="mod-icon">🔪</div>
+      <div class="mod-num">Módulo 1</div>
+      <div class="mod-name">Produtos</div>
+      <div class="mod-desc">Modelos, variações, SKU Amazon, fotos</div>
+      <div class="mod-arrow">→</div>
+    </a>
+    <a class="mod-card m2" href="braseiro-precos.html">
+      <div class="mod-icon">💰</div>
+      <div class="mod-num">Módulo 2</div>
+      <div class="mod-name">Preços</div>
+      <div class="mod-desc">Formação de preço por canal e câmbio</div>
+      <div class="mod-arrow">→</div>
+    </a>
+    <a class="mod-card m3" href="braseiro-estoque.html">
+      <div class="mod-icon">📦</div>
+      <div class="mod-num">Módulo 3</div>
+      <div class="mod-name">Estoque</div>
+      <div class="mod-desc">Texas, Brasil, trânsito, movimentações</div>
+      <div class="mod-arrow">→</div>
+    </a>
+    <a class="mod-card m4" href="braseiro-clientes.html">
+      <div class="mod-icon">👥</div>
+      <div class="mod-num">Módulo 5</div>
+      <div class="mod-name">Clientes</div>
+      <div class="mod-desc">CRM, histórico, aniversários, VIPs</div>
+      <div class="mod-arrow">→</div>
+    </a>
+    <a class="mod-card m4" href="braseiro-vendas-v2.html">
+      <div class="mod-icon">🛒</div>
+      <div class="mod-num">Módulo 4</div>
+      <div class="mod-name">Vendas</div>
+      <div class="mod-desc">Pedidos, rifas, leilões, 10 canais</div>
+      <div class="mod-arrow">→</div>
+    </a>
+    <a class="mod-card m6" href="braseiro-dashboard.html">
+      <div class="mod-icon">📊</div>
+      <div class="mod-num">Módulo 6</div>
+      <div class="mod-name">Dashboard</div>
+      <div class="mod-desc">Gráficos, análises, relatórios</div>
+      <div class="mod-arrow">→</div>
+    </a>
+    <a class="mod-card m5" href="braseiro-fiscal.html">
+      <div class="mod-icon">🧾</div>
+      <div class="mod-num">Módulo 7</div>
+      <div class="mod-name">Fiscal</div>
+      <div class="mod-desc">Sales Tax TX · IRS · COGS · Contador</div>
+      <div class="mod-arrow">→</div>
+    </a>
+    <a class="mod-card m3" href="braseiro-bainhas.html">
+      <div class="mod-icon">🗡️</div>
+      <div class="mod-num">Módulo 8</div>
+      <div class="mod-name">Bainhas</div>
+      <div class="mod-desc">Cadastro · código · foto · facas compatíveis</div>
+      <div class="mod-arrow">→</div>
+    </a>
+  </div>
+
+  <!-- Footer -->
+  <div class="hub-footer">
+    <span>Braseiro Premium Knives</span>
+    <div class="hf-dot"></div>
+    <span>Dados salvos no Supabase · East US</span>
+    <div class="hf-dot"></div>
+    <span id="lastSync">Sincronizando...</span>
+  </div>
+
+</div>
+
+<div class="toast" id="toast">
+  <svg width="14" height="14" fill="none" stroke="#c9a84c" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+  <span id="toastMsg"></span>
+</div>
+
+<script>
+const SUPA_URL = 'https://mibylztsvhhhmnsoipac.supabase.co';
+const SUPA_KEY = 'sb_publishable_a7X5JlFdtqwzaE9bB5TsGg_09zvlle-';
+const supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+function loadStats() {
+  // Always load from localStorage first (instant, always available)
+  const models   = JSON.parse(localStorage.getItem('braseiro_models_v2') || '[]');
+  const clients  = JSON.parse(localStorage.getItem('braseiro_clients')   || '[]');
+  const orders   = JSON.parse(localStorage.getItem('braseiro_orders')    || '[]');
+  const stock    = JSON.parse(localStorage.getItem('braseiro_stock')     || '[]');
+
+  // Count variations too
+  let varCount = 0;
+  models.forEach(m => varCount += (m.variacoes||[]).length);
+
+  document.getElementById('stModels').innerHTML  = `${models.length} <span>modelos</span>`;
+  document.getElementById('stClients').innerHTML = `${clients.length} <span>clientes</span>`;
+  document.getElementById('stOrders').innerHTML  = `${orders.length} <span>pedidos</span>`;
+  const totalStock = stock.reduce((s,i)=>s+(i.qtd||0),0);
+  document.getElementById('stStock').innerHTML   = `${totalStock} <span>peças</span>`;
+
+  // Show connection status
+  document.getElementById('connDot').style.background = '#4caf7a';
+  document.getElementById('connText').textContent = 'Online · Dados salvos na nuvem';
+  document.getElementById('connText').style.color = '#4caf7a';
+  document.getElementById('lastSync').textContent = 'Última sync: ' + new Date().toLocaleTimeString('pt-BR');
+}
+
+loadStats();
+// Refresh stats every 60s
+setInterval(loadStats, 60000);
+</script>
+</body>
+</html>

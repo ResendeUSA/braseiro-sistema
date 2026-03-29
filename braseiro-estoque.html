@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Braseiro — Estoque</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--black:#0a0a0a;--charcoal:#141414;--steel:#1e1e1e;--iron:#2a2a2a;--smoke:#3a3a3a;--ash:#6b6b6b;--silver:#a8a8a8;--light:#e8e4de;--cream:#f5f1eb;--gold:#c9a84c;--gold-light:#e8c96b;--ember:#c44a1a;--green:#4caf7a;--blue:#5b9cf6;--border:rgba(201,168,76,.2);--border-h:rgba(201,168,76,.5)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--black);color:var(--light);font-family:'Rajdhani',sans-serif;min-height:100vh}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 70% 50% at 10% 90%,rgba(91,156,246,.05) 0%,transparent 60%);pointer-events:none;z-index:0}
+header{position:sticky;top:0;z-index:100;background:rgba(10,10,10,.96);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 40px;display:flex;align-items:center;justify-content:space-between;height:70px}
+.logo{display:flex;align-items:center;gap:14px}
+.logo svg{width:36px;height:36px}
+.logo-text span:first-child{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;color:var(--gold);display:block}
+.logo-text span:last-child{font-size:9px;letter-spacing:.25em;color:var(--ash);text-transform:uppercase;display:block;margin-top:2px}
+.nav{display:flex;gap:6px}
+.nb{padding:7px 16px;background:transparent;border:1px solid transparent;color:var(--ash);font-family:'Rajdhani',sans-serif;font-size:12px;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;border-radius:2px;transition:all .2s}
+.nb.active{border-color:var(--border);color:var(--gold);background:rgba(201,168,76,.06)}
+.nb:hover:not(.active){color:var(--silver);border-color:rgba(255,255,255,.08)}
+main{position:relative;z-index:1;max-width:1400px;margin:0 auto;padding:40px 40px 80px}
+.ph{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:28px;padding-bottom:22px;border-bottom:1px solid var(--border)}
+.ph h1{font-family:'Cormorant Garamond',serif;font-size:42px;font-weight:300;color:var(--cream);line-height:1}
+.ph h1 em{font-style:italic;color:var(--gold)}
+.ph p{margin-top:8px;font-size:13px;color:var(--ash);letter-spacing:.1em;text-transform:uppercase}
+.ph-acts{display:flex;gap:10px}
+.btn-p{display:inline-flex;align-items:center;gap:8px;padding:11px 22px;background:var(--gold);color:var(--black);border:none;font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;border-radius:2px;transition:all .25s}
+.btn-p:hover{background:var(--gold-light)}
+.btn-s{display:inline-flex;align-items:center;gap:8px;padding:9px 18px;background:transparent;color:var(--silver);border:1px solid var(--border);font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;border-radius:2px}
+.btn-s:hover{border-color:var(--border-h);color:var(--gold)}
+.loc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+.loc-card{background:var(--charcoal);border:1px solid var(--border);border-radius:4px;padding:20px;position:relative;overflow:hidden;cursor:pointer}
+.loc-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px}
+.loc-card.texas::after{background:var(--blue)}.loc-card.brasil::after{background:var(--green)}
+.loc-card.transito::after{background:#f59e0b}.loc-card.consig::after{background:#a78bfa}
+.loc-flag{font-size:24px;margin-bottom:8px}
+.loc-name{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--ash);margin-bottom:4px}
+.loc-count{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:600;color:var(--cream)}
+.loc-count span{font-size:13px;font-family:'Rajdhani',sans-serif;font-weight:400;color:var(--ash)}
+.loc-sub{font-size:11px;color:var(--ash);margin-top:2px}
+.summary-bar{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:4px;margin-bottom:24px;overflow:hidden}
+.sum-item{background:var(--charcoal);padding:14px 20px}
+.sum-label{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--ash)}
+.sum-val{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:600;color:var(--cream);margin-top:2px}
+.sum-val span{font-size:12px;font-family:'Rajdhani',sans-serif;color:var(--ash)}
+.tabs{display:flex;gap:2px;background:var(--charcoal);border:1px solid var(--border);border-radius:4px;padding:4px;width:fit-content;margin-bottom:20px}
+.tab-btn{padding:8px 22px;border:none;background:transparent;color:var(--ash);font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;border-radius:3px;transition:all .2s}
+.tab-btn.active{background:var(--gold);color:var(--black)}
+.filter-bar{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+.search-inp{background:var(--steel);border:1px solid rgba(255,255,255,.08);border-radius:3px;padding:8px 14px;color:var(--light);font-family:'Rajdhani',sans-serif;font-size:13px;outline:none;width:240px}
+.search-inp:focus{border-color:rgba(201,168,76,.4)}
+.fchip{padding:6px 14px;border-radius:20px;border:1px solid rgba(255,255,255,.1);background:transparent;color:var(--ash);font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;cursor:pointer}
+.fchip.on{background:var(--gold);color:var(--black);border-color:var(--gold)}
+.stock-table{width:100%;border-collapse:collapse}
+.stock-table th{text-align:left;font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--ash);padding:10px 14px;border-bottom:1px solid var(--border)}
+.stock-table td{padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.04);font-size:13px;color:var(--silver);vertical-align:middle}
+.stock-table tr:hover td{background:rgba(255,255,255,.02)}
+.lbadge{display:inline-block;padding:3px 10px;border-radius:3px;font-size:10px;font-weight:700;letter-spacing:.08em}
+.lt{background:rgba(91,156,246,.15);color:var(--blue)}.lb{background:rgba(76,175,122,.15);color:var(--green)}
+.ltr{background:rgba(245,158,11,.15);color:#f59e0b}.lc{background:rgba(167,139,250,.15);color:#a78bfa}
+.row-acts{display:flex;gap:5px;justify-content:flex-end}
+.ib{width:28px;height:28px;background:var(--steel);border:1px solid rgba(255,255,255,.06);border-radius:2px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--ash);transition:all .2s;font-size:12px;font-family:sans-serif}
+.ib:hover{background:var(--iron);color:var(--gold);border-color:var(--border)}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(8px);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .3s}
+.overlay.open{opacity:1;pointer-events:all}
+.modal{background:var(--charcoal);border:1px solid var(--border);border-radius:6px;width:100%;max-width:580px;max-height:92vh;overflow-y:auto;transform:translateY(20px);transition:transform .3s}
+.overlay.open .modal{transform:translateY(0)}
+.mh{padding:20px 26px 14px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:var(--charcoal);z-index:2}
+.mh h2{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:400;color:var(--cream)}
+.mh p{font-size:11px;color:var(--ash);margin-top:2px}
+.xbtn{width:30px;height:30px;background:var(--steel);border:1px solid var(--border);border-radius:2px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--ash)}
+.xbtn:hover{color:var(--cream)}
+.mb{padding:20px 26px}
+.mf{padding:12px 26px 20px;display:flex;justify-content:flex-end;gap:10px;border-top:1px solid var(--border)}
+.ff{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
+.ff label{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--ash);font-weight:600}
+.ff input,.ff select,.ff textarea{background:var(--steel);border:1px solid rgba(255,255,255,.08);border-radius:3px;padding:9px 13px;color:var(--light);font-family:'Rajdhani',sans-serif;font-size:14px;outline:none;width:100%}
+.ff input:focus,.ff select:focus{border-color:rgba(201,168,76,.4);background:var(--iron)}
+.fg2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.pdrop{display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--iron);border:1px solid var(--border-h);border-radius:3px;z-index:300;max-height:220px;overflow-y:auto;box-shadow:0 12px 32px rgba(0,0,0,.6)}
+.pitem{display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.04)}
+.pitem:hover{background:rgba(201,168,76,.1)}
+.selcard{display:none;margin-top:8px;background:rgba(201,168,76,.07);border:1px solid rgba(201,168,76,.25);border-radius:3px;padding:10px 14px;align-items:center;justify-content:space-between;gap:10px}
+.selcard.on{display:flex}
+.mt-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
+.mt-opt{padding:10px;background:var(--steel);border:1px solid rgba(255,255,255,.07);border-radius:3px;cursor:pointer;text-align:center;transition:all .2s}
+.mt-opt.sel{background:rgba(201,168,76,.1);border-color:rgba(201,168,76,.4)}
+.mt-opt .ml{font-size:11px;font-weight:700;color:var(--silver)}
+.mt-opt.sel .ml{color:var(--gold)}
+.toast{position:fixed;bottom:32px;right:32px;background:var(--charcoal);border:1px solid var(--gold);border-radius:4px;padding:13px 18px;font-size:13px;color:var(--cream);transform:translateY(20px);opacity:0;transition:all .3s;z-index:400;pointer-events:none}
+.toast.show{transform:translateY(0);opacity:1}
+.erow td{padding:40px;text-align:center;color:var(--ash)}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--charcoal)}::-webkit-scrollbar-thumb{background:var(--smoke);border-radius:3px}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">
+    <svg viewBox="0 0 40 40" fill="none"><path d="M8 32 L28 8 L34 14 L16 36 Z" fill="none" stroke="#c9a84c" stroke-width="1.5"/><path d="M28 8 L34 14 L32 16 L26 10 Z" fill="#c9a84c" opacity="0.6"/><path d="M8 32 L12 34 L16 36 L14 32 Z" fill="#c44a1a" opacity="0.8"/></svg>
+    <div class="logo-text"><span>Braseiro Premium Knives</span><span>Sistema de Gestão</span></div>
+  </div>
+  <nav class="nav">
+    <button class="nb" onclick="location.href='braseiro-index.html'" style="color:var(--gold);border-color:var(--border)">← Início</button>
+    <button class="nb" onclick="location.href='braseiro-cadastro-v2.html'">Produtos</button>
+    <button class="nb active">Estoque</button>
+    <button class="nb" onclick="location.href='braseiro-vendas-v2.html'">Vendas</button>
+  </nav>
+</header>
+
+<main>
+  <div class="ph">
+    <div><h1>Controle de <em>Estoque</em></h1><p>4 localizações · movimentações · histórico</p></div>
+    <div class="ph-acts">
+      <button class="btn-s" onclick="abrirMov()">⇄ Registrar Movimentação</button>
+      <button class="btn-p" onclick="abrirAdd()">+ Adicionar Peça</button>
+    </div>
+  </div>
+
+  <div class="loc-grid">
+    <div class="loc-card texas" onclick="filtrar('texas')"><div class="loc-flag">🇺🇸</div><div class="loc-name">Texas (EUA)</div><div class="loc-count" id="cnt-texas">0 <span>peças</span></div><div class="loc-sub">Estoque principal</div></div>
+    <div class="loc-card brasil" onclick="filtrar('brasil')"><div class="loc-flag">🇧🇷</div><div class="loc-name">Brasil</div><div class="loc-count" id="cnt-brasil">0 <span>peças</span></div><div class="loc-sub">Estoque local</div></div>
+    <div class="loc-card transito" onclick="filtrar('transito')"><div class="loc-flag">🚢</div><div class="loc-name">Em Trânsito</div><div class="loc-count" id="cnt-transito">0 <span>peças</span></div><div class="loc-sub">BR → Texas</div></div>
+    <div class="loc-card consig" onclick="filtrar('consignado')"><div class="loc-flag">🤝</div><div class="loc-name">Consignado</div><div class="loc-count" id="cnt-consig">0 <span>peças</span></div><div class="loc-sub">Com revendedor</div></div>
+  </div>
+
+  <div class="summary-bar">
+    <div class="sum-item"><div class="sum-label">Total em Estoque</div><div class="sum-val" id="sumT">0 <span>peças</span></div></div>
+    <div class="sum-item"><div class="sum-label">Reservadas</div><div class="sum-val" id="sumR">0 <span>peças</span></div></div>
+    <div class="sum-item"><div class="sum-label">Disponíveis</div><div class="sum-val" id="sumD">0 <span>peças</span></div></div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" id="tbS" onclick="aba('stock')">Estoque Atual</button>
+    <button class="tab-btn" id="tbP" onclick="aba('prod')">🔨 Em Produção</button>
+    <button class="tab-btn" id="tbM" onclick="aba('mov')">Histórico</button>
+  </div>
+
+  <div class="filter-bar">
+    <input class="search-inp" id="busca" placeholder="Buscar código ou nome..." oninput="renderStock()">
+    <button class="fchip on" onclick="filtrar('todos',this)">Todos</button>
+    <button class="fchip" onclick="filtrar('texas',this)">🇺🇸 Texas</button>
+    <button class="fchip" onclick="filtrar('brasil',this)">🇧🇷 Brasil</button>
+    <button class="fchip" onclick="filtrar('transito',this)">🚢 Trânsito</button>
+    <button class="fchip" onclick="filtrar('consignado',this)">🤝 Consignado</button>
+  </div>
+
+  <div id="divStock"><table class="stock-table"><thead><tr><th>Produto</th><th>Local</th><th style="text-align:center">Total</th><th style="text-align:center">Reservado</th><th style="text-align:center">Disponível</th><th>Custo</th><th style="text-align:right">Ações</th></tr></thead><tbody id="tbStock"></tbody></table></div>
+  <div id="divProd" style="display:none">
+    <div style="background:rgba(91,156,246,.06);border:1px solid rgba(91,156,246,.2);border-radius:4px;padding:14px 18px;margin-bottom:16px;font-size:12px;color:var(--silver)">
+      🔨 <strong style="color:#5b9cf6">Peças em Produção</strong> são pedidos pagos cujas peças ainda não existem fisicamente. Elas não estão no estoque mas estão comprometidas para clientes específicos.
+    </div>
+    <table class="stock-table">
+      <thead><tr><th>Pedido</th><th>Cliente</th><th>Produto</th><th>Qtd</th><th>Status Pgto</th><th>Data</th><th>Ações</th></tr></thead>
+      <tbody id="tbProd"></tbody>
+    </table>
+  </div>
+
+  <div id="divMov" style="display:none">
+    <div style="display:flex;justify-content:flex-end;margin-bottom:10px">
+      <button class="btn-s" onclick="limparHistorico()" style="color:var(--ember);border-color:rgba(196,74,26,.3)">
+        🗑 Limpar Histórico de Testes
+      </button>
+    </div>
+    <table class="stock-table"><thead><tr><th>Data</th><th>Tipo</th><th>Produto</th><th style="text-align:center">Qtd</th><th>Local</th><th>Obs</th></tr></thead><tbody id="tbMov"></tbody></table></div>
+</main>
+
+<!-- Modal Adicionar -->
+<div class="overlay" id="ovAdd" onclick="if(event.target===this)fechar('ovAdd')">
+  <div class="modal">
+    <div class="mh"><div><h2>Adicionar Peça</h2><p>Nova entrada no estoque</p></div><button class="xbtn" onclick="fechar('ovAdd')">✕</button></div>
+    <div class="mb">
+      <div class="ff">
+        <label>Produto *</label>
+        <div style="position:relative">
+          <input type="text" id="aS" placeholder="Digite o código ou nome do produto..." autocomplete="off"
+            oninput="buscarProd(this.value,'aD',selAdd)" onfocus="buscarProd(this.value,'aD',selAdd)">
+          <div class="pdrop" id="aD"></div>
+        </div>
+        <div class="selcard" id="aC">
+          <div style="display:flex;align-items:center;gap:10px">
+            <div style="font-size:20px">🔪</div>
+            <div><div id="aSC" style="font-size:11px;color:var(--ash)"></div><div id="aSN" style="font-size:14px;font-weight:700;color:var(--gold)"></div></div>
+          </div>
+          <button onclick="limparAdd()" style="background:transparent;border:none;cursor:pointer;color:var(--ash);font-size:16px">✕</button>
+        </div>
+        <input type="hidden" id="aCod"><input type="hidden" id="aNom">
+      </div>
+      <div class="fg2">
+        <div class="ff"><label>Localização</label><select id="aLoc"><option value="texas">🇺🇸 Texas</option><option value="brasil">🇧🇷 Brasil</option><option value="transito">🚢 Trânsito</option><option value="consignado">🤝 Consignado</option></select></div>
+        <div class="ff"><label>Quantidade</label><input type="number" id="aQtd" value="1" min="1"></div>
+      </div>
+      <div class="fg2">
+        <div class="ff"><label>Custo Unit. (R$)</label><input type="number" id="aCst" placeholder="0.00" step="0.01" min="0"></div>
+        <div class="ff"><label>Data</label><input type="date" id="aDat"></div>
+      </div>
+      <div class="ff"><label>Observações</label><textarea id="aObs" style="min-height:60px;resize:vertical"></textarea></div>
+    </div>
+    <div class="mf">
+      <button class="btn-s" onclick="fechar('ovAdd')">Cancelar</button>
+      <button class="btn-p" id="btnAdd" onclick="salvarPeca()">✓ Adicionar ao Estoque</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Movimentação -->
+<div class="overlay" id="ovMov" onclick="if(event.target===this)fechar('ovMov')">
+  <div class="modal">
+    <div class="mh"><div><h2>Registrar Movimentação</h2><p>Saída, transferência, reserva...</p></div><button class="xbtn" onclick="fechar('ovMov')">✕</button></div>
+    <div class="mb">
+      <div class="mt-grid">
+        <div class="mt-opt sel" data-t="entrada" onclick="selTipo(this)"><div class="ml">📥 Entrada</div></div>
+        <div class="mt-opt" data-t="saida" onclick="selTipo(this)"><div class="ml">📤 Saída</div></div>
+        <div class="mt-opt" data-t="transferencia" onclick="selTipo(this)"><div class="ml">🔄 Transferência</div></div>
+        <div class="mt-opt" data-t="reserva" onclick="selTipo(this)"><div class="ml">🔒 Reserva</div></div>
+        <div class="mt-opt" data-t="devolucao" onclick="selTipo(this)"><div class="ml">↩️ Devolução</div></div>
+        <div class="mt-opt" data-t="descarte" onclick="selTipo(this)"><div class="ml">🗑️ Descarte</div></div>
+      </div>
+      <div class="ff">
+        <label>Produto *</label>
+        <div style="position:relative">
+          <input type="text" id="mS" placeholder="Digite o código ou nome do produto..." autocomplete="off"
+            oninput="buscarProd(this.value,'mD',selMov)" onfocus="buscarProd(this.value,'mD',selMov)">
+          <div class="pdrop" id="mD"></div>
+        </div>
+        <input type="hidden" id="mCod"><input type="hidden" id="mNom">
+      </div>
+      <div class="fg2">
+        <div class="ff"><label>De / Local</label><select id="mOri"><option value="texas">🇺🇸 Texas</option><option value="brasil">🇧🇷 Brasil</option><option value="transito">🚢 Trânsito</option><option value="consignado">🤝 Consignado</option></select></div>
+        <div class="ff" id="mDestRow" style="display:none"><label>Para (destino)</label><select id="mDes"><option value="brasil">🇧🇷 Brasil</option><option value="texas">🇺🇸 Texas</option><option value="transito">🚢 Trânsito</option><option value="consignado">🤝 Consignado</option></select></div>
+      </div>
+      <div class="fg2">
+        <div class="ff"><label>Quantidade</label><input type="number" id="mQtd" value="1" min="1"></div>
+        <div class="ff"><label>Data</label><input type="date" id="mDat"></div>
+      </div>
+      <div class="ff"><label>Observação</label><input type="text" id="mObs" placeholder="Opcional"></div>
+    </div>
+    <div class="mf">
+      <button class="btn-s" onclick="fechar('ovMov')">Cancelar</button>
+      <button class="btn-p" onclick="salvarMov()">✓ Registrar</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── State ──
+var stock      = JSON.parse(localStorage.getItem('braseiro_stock') || '[]');
+var movs       = JSON.parse(localStorage.getItem('braseiro_movimentos') || '[]');
+var filtroLoc  = 'todos';
+var tipoMov    = 'entrada';
+
+function salvar() {
+  localStorage.setItem('braseiro_stock', JSON.stringify(stock));
+  localStorage.setItem('braseiro_movimentos', JSON.stringify(movs));
+}
+function hoje() { return new Date().toISOString().split('T')[0]; }
+function fdata(d) { if(!d) return '—'; var p=(d||'').split('T')[0].split('-'); return p[2]+'/'+p[1]+'/'+p[0]; }
+function msg(txt, err) {
+  var t = document.getElementById('toast');
+  t.textContent = txt;
+  t.style.borderColor = err ? '#c44a1a' : '#c9a84c';
+  t.classList.add('show');
+  setTimeout(function(){ t.classList.remove('show'); }, 3000);
+}
+function abrir(id) { document.getElementById(id).classList.add('open'); document.body.style.overflow='hidden'; }
+function fechar(id) { document.getElementById(id).classList.remove('open'); document.body.style.overflow=''; }
+
+// ── Produtos ──
+function getProdos() {
+  var models = JSON.parse(localStorage.getItem('braseiro_models_v2') || '[]');
+  var list = [];
+  models.forEach(function(m) {
+    list.push({ codigo: m.codigo, nome: m.nome, custo: m.custo||0, foto: m.foto||null });
+    (m.variacoes||[]).forEach(function(v) {
+      list.push({ codigo: v.codigo, nome: m.nome+' — '+(v.desc||v.sufixo||''), custo: v.custo||m.custo||0, foto: v.foto||m.foto||null });
+    });
+  });
+  return list;
+}
+
+function buscarProd(q, dropId, cb) {
+  var drop = document.getElementById(dropId);
+  var all  = getProdos();
+  var ql   = (q||'').toLowerCase().trim();
+  var res  = ql==='' ? all.slice(0,8) : all.filter(function(p){ return p.codigo.toLowerCase().includes(ql)||p.nome.toLowerCase().includes(ql); }).slice(0,8);
+
+  if (all.length === 0) {
+    drop.innerHTML = '<div style="padding:14px;text-align:center;color:#6b6b6b">Cadastre produtos no Módulo 1 primeiro.</div>';
+    drop.style.display = 'block'; return;
+  }
+  if (res.length === 0) { drop.style.display='none'; return; }
+
+  drop.innerHTML = '';
+  res.forEach(function(p) {
+    var qty = stock.filter(function(s){ return s.codigo===p.codigo; }).reduce(function(a,s){ return a+(s.qtd||0); }, 0);
+    var div = document.createElement('div');
+    div.className = 'pitem';
+    div.innerHTML = (p.foto ? '<img src="'+p.foto+'" style="width:36px;height:36px;object-fit:cover;border-radius:3px;flex-shrink:0">' : '<div style="width:36px;height:36px;background:#1e1e1e;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:16px">🔪</div>')
+      + '<div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:700;color:#c9a84c">'+p.codigo+'</div><div style="font-size:11px;color:#a8a8a8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+p.nome+'</div></div>'
+      + '<div style="font-size:10px;color:'+(qty>0?'#4caf7a':'#6b6b6b')+'">'+qty+' un.</div>';
+    (function(prod){ div.addEventListener('click', function(){ drop.style.display='none'; cb(prod.codigo, prod.nome, prod.custo||0); }); })(p);
+    drop.appendChild(div);
+  });
+  drop.style.display = 'block';
+}
+
+document.addEventListener('click', function(e) {
+  document.querySelectorAll('.pdrop').forEach(function(d) {
+    if (!d.contains(e.target) && e.target.id !== 'aS' && e.target.id !== 'mS') {
+      d.style.display = 'none';
+    }
+  });
+});
+
+// ── ADD ──
+function abrirAdd(item) {
+  document.getElementById('aS').value = '';
+  document.getElementById('aCod').value = '';
+  document.getElementById('aNom').value = '';
+  document.getElementById('aQtd').value = '1';
+  document.getElementById('aCst').value = '';
+  document.getElementById('aObs').value = '';
+  document.getElementById('aDat').value = hoje();
+  document.getElementById('aLoc').value = 'texas';
+  document.getElementById('aD').style.display = 'none';
+  document.getElementById('aC').classList.remove('on');
+  document.getElementById('btnAdd').textContent = '✓ Adicionar ao Estoque';
+  document.getElementById('btnAdd').onclick = salvarPeca;
+  if (item && item.codigo) { selAdd(item.codigo, item.nome||item.codigo, item.custo||0); if(item.local) document.getElementById('aLoc').value = item.local; }
+  abrir('ovAdd');
+}
+
+function selAdd(cod, nom, cst) {
+  document.getElementById('aCod').value = cod;
+  document.getElementById('aNom').value = nom;
+  document.getElementById('aS').value   = cod;
+  document.getElementById('aD').style.display = 'none';
+  if (cst>0) document.getElementById('aCst').value = cst.toFixed(2);
+  document.getElementById('aSC').textContent = cod;
+  document.getElementById('aSN').textContent = nom;
+  document.getElementById('aC').classList.add('on');
+}
+
+function limparAdd() {
+  document.getElementById('aCod').value = '';
+  document.getElementById('aNom').value = '';
+  document.getElementById('aS').value = '';
+  document.getElementById('aC').classList.remove('on');
+}
+
+function salvarPeca() {
+  var cod  = document.getElementById('aCod').value.trim();
+  var nom  = document.getElementById('aNom').value.trim();
+  if (!cod) { msg('Selecione um produto!', true); return; }
+  var loc  = document.getElementById('aLoc').value;
+  var qtd  = parseInt(document.getElementById('aQtd').value) || 1;
+  var cst  = parseFloat(document.getElementById('aCst').value) || 0;
+  var obs  = document.getElementById('aObs').value.trim();
+  var ex   = stock.find(function(s){ return s.codigo===cod && s.local===loc; });
+  if (ex) { ex.qtd += qtd; if(cst>0) ex.custo=cst; }
+  else stock.push({ id:Date.now(), codigo:cod, nome:nom||cod, local:loc, qtd:qtd, reservado:0, custo:cst, obs:obs, criadoEm:hoje() });
+  movs.unshift({ id:Date.now(), tipo:'entrada', codigo:cod, nomeProd:nom||cod, local:loc, qtd:qtd, data:hoje(), obs:'Entrada manual' });
+  salvar(); fechar('ovAdd'); renderAll();
+  msg(qtd+'x '+cod+' adicionado ao estoque ('+loc+')!');
+}
+
+function editarItem(id) {
+  var item = stock.find(function(s){ return s.id===id; });
+  if (!item) return;
+  abrirAdd(item);
+  setTimeout(function(){
+    document.getElementById('aQtd').value = item.qtd||1;
+    document.getElementById('aCst').value = item.custo||'';
+    document.getElementById('btnAdd').textContent = '✏️ Atualizar Item';
+    document.getElementById('btnAdd').onclick = function(){ atualizarItem(id); };
+  }, 50);
+}
+
+function atualizarItem(id) {
+  var idx = stock.findIndex(function(s){ return s.id===id; });
+  if (idx<0) return;
+  stock[idx].qtd   = parseInt(document.getElementById('aQtd').value) || stock[idx].qtd;
+  stock[idx].custo = parseFloat(document.getElementById('aCst').value) || stock[idx].custo;
+  stock[idx].local = document.getElementById('aLoc').value;
+  stock[idx].obs   = document.getElementById('aObs').value.trim();
+  salvar(); fechar('ovAdd'); renderAll(); msg('Item atualizado!');
+}
+
+function excluirItem(id) {
+  var item = stock.find(function(s){ return s.id===id; });
+  if (!item || !confirm('Excluir '+item.codigo+' do estoque?')) return;
+  stock = stock.filter(function(s){ return s.id!==id; });
+  salvar(); renderAll(); msg('Item removido.');
+}
+
+// ── MOV ──
+function abrirMov(cod) {
+  tipoMov = 'entrada';
+  document.querySelectorAll('.mt-opt').forEach(function(o){ o.classList.remove('sel'); });
+  document.querySelector('[data-t="entrada"]').classList.add('sel');
+  document.getElementById('mS').value = '';
+  document.getElementById('mCod').value = '';
+  document.getElementById('mNom').value = '';
+  document.getElementById('mQtd').value = '1';
+  document.getElementById('mDat').value = hoje();
+  document.getElementById('mOri').value = 'texas';
+  document.getElementById('mDes').value = 'brasil';
+  document.getElementById('mObs').value = '';
+  document.getElementById('mD').style.display = 'none';
+  document.getElementById('mDestRow').style.display = 'none';
+  if (cod) { var p=getProdos().find(function(x){return x.codigo===cod;}); if(p) selMov(p.codigo,p.nome,p.custo||0); }
+  abrir('ovMov');
+}
+
+function selMov(cod, nom) {
+  document.getElementById('mCod').value = cod;
+  document.getElementById('mNom').value = nom;
+  document.getElementById('mS').value   = cod;
+  document.getElementById('mD').style.display = 'none';
+}
+
+function selTipo(el) {
+  document.querySelectorAll('.mt-opt').forEach(function(o){ o.classList.remove('sel'); });
+  el.classList.add('sel');
+  tipoMov = el.getAttribute('data-t');
+  document.getElementById('mDestRow').style.display = tipoMov==='transferencia' ? 'block' : 'none';
+}
+
+function salvarMov() {
+  var cod  = document.getElementById('mCod').value.trim().toUpperCase();
+  var qtd  = parseInt(document.getElementById('mQtd').value) || 1;
+  if (!cod) { msg('Selecione um produto!', true); return; }
+  var ori  = document.getElementById('mOri').value;
+  var des  = document.getElementById('mDes').value;
+  var dat  = document.getElementById('mDat').value || hoje();
+  var obs  = document.getElementById('mObs').value.trim();
+  var nom  = document.getElementById('mNom').value.trim() || cod;
+  var item = stock.find(function(s){ return s.codigo===cod && s.local===ori; });
+
+  if (tipoMov==='entrada' || tipoMov==='devolucao') {
+    if (item) item.qtd += qtd;
+    else stock.push({ id:Date.now(), codigo:cod, nome:nom, local:ori, qtd:qtd, reservado:0, custo:0, criadoEm:dat });
+  } else if (tipoMov==='saida' || tipoMov==='descarte') {
+    if (!item||item.qtd<qtd) { msg('Estoque insuficiente!', true); return; }
+    item.qtd -= qtd;
+    if (item.qtd<=0) stock = stock.filter(function(s){ return !(s.codigo===cod&&s.local===ori); });
+  } else if (tipoMov==='transferencia') {
+    if (!item||item.qtd<qtd) { msg('Quantidade insuficiente!', true); return; }
+    item.qtd -= qtd;
+    if (item.qtd<=0) stock = stock.filter(function(s){ return !(s.codigo===cod&&s.local===ori); });
+    var dest = stock.find(function(s){ return s.codigo===cod&&s.local===des; });
+    if (dest) dest.qtd += qtd;
+    else stock.push({ id:Date.now(), codigo:cod, nome:nom, local:des, qtd:qtd, reservado:0, custo:item?item.custo:0, criadoEm:dat });
+  } else if (tipoMov==='reserva') {
+    if (!item||item.qtd-(item.reservado||0)<qtd) { msg('Disponível insuficiente!', true); return; }
+    item.reservado = (item.reservado||0)+qtd;
+  }
+
+  movs.unshift({ id:Date.now(), tipo:tipoMov, codigo:cod, nomeProd:nom, local:ori, destino:tipoMov==='transferencia'?des:null, qtd:qtd, data:dat, obs:obs });
+  salvar(); fechar('ovMov'); renderAll();
+  msg('Movimentação registrada — '+qtd+'x '+cod);
+}
+
+// ── FILTER / TAB ──
+function filtrar(loc, btn) {
+  filtroLoc = loc;
+  document.querySelectorAll('.fchip').forEach(function(b){ b.classList.remove('on'); });
+  if (btn) btn.classList.add('on');
+  renderStock();
+}
+
+function aba(tab) {
+  document.getElementById('divStock').style.display = tab==='stock' ? 'block' : 'none';
+  document.getElementById('divProd').style.display  = tab==='prod'  ? 'block' : 'none';
+  document.getElementById('divMov').style.display   = tab==='mov'   ? 'block' : 'none';
+  document.getElementById('tbS').classList.toggle('active', tab==='stock');
+  document.getElementById('tbP').classList.toggle('active', tab==='prod');
+  document.getElementById('tbM').classList.toggle('active', tab==='mov');
+  if (tab==='mov')  renderMov();
+  if (tab==='prod') renderProd();
+}
+
+function renderProd() {
+  var body   = document.getElementById('tbProd');
+  var orders = JSON.parse(localStorage.getItem('braseiro_orders') || '[]');
+  // Show orders in production status
+  var emProd = orders.filter(function(o) {
+    return o.status === 'producao' || 
+           (o.status !== 'entregue' && o.status !== 'cancelado' && o.pgtoStatus === 'pago' && o.status !== 'pronto' && o.status !== 'enviado');
+  });
+
+  if (emProd.length === 0) {
+    body.innerHTML = '<tr><td colspan="7" style="padding:30px;text-align:center;color:var(--ash)">Nenhuma peça em produção no momento. 🎉</td></tr>';
+    return;
+  }
+
+  var PGTO_LABEL = {pago:'✅ Pago', parcial:'💛 Parcial', pendente:'⏳ Pendente'};
+  var PGTO_COLOR = {pago:'#4caf7a', parcial:'#f59e0b', pendente:'#c44a1a'};
+
+  body.innerHTML = emProd.map(function(o) {
+    var itens = (o.items||[]).map(function(it){ return it.qtd+'x '+it.codigo; }).join(', ');
+    var qtd   = (o.items||[]).reduce(function(s,it){ return s+(it.qtd||1); }, 0);
+    var pgto  = o.pgtoStatus || (o.status==='confirmado'?'pago':'pendente');
+    var sym   = o.moeda==='USD'?'$':'R$';
+    return '<tr>'
+      + '<td><div style="font-size:12px;font-weight:700;color:var(--gold)">'+o.numero+'</div><div style="font-size:10px;color:var(--ash)">'+sym+' '+(o.total||0).toLocaleString('pt-BR',{minimumFractionDigits:2})+'</div></td>'
+      + '<td style="font-size:12px;color:var(--silver)">'+(o.cliente||'—')+'</td>'
+      + '<td style="font-size:11px;color:var(--silver)">'+(itens||'—')+'</td>'
+      + '<td style="text-align:center;font-weight:700">'+qtd+'</td>'
+      + '<td><span style="font-size:11px;font-weight:700;color:'+(PGTO_COLOR[pgto]||'#6b6b6b')+'">'+(PGTO_LABEL[pgto]||pgto)+'</span>'
+      + (o.saldoRestante ? '<div style="font-size:10px;color:#c44a1a">Falta: R$'+o.saldoRestante.toFixed(2)+'</div>' : '')
+      + '</td>'
+      + '<td style="font-size:11px;color:var(--ash)">'+(o.dataPedido||'—')+'</td>'
+      + '<td><a href="braseiro-vendas-v2.html" style="font-size:11px;color:var(--gold);text-decoration:none">Ver pedido →</a></td>'
+      + '</tr>';
+  }).join('');
+}
+
+// ── RENDER ──
+function getCusto(codigo, custoRaw) {
+  var prices = JSON.parse(localStorage.getItem('braseiro_prices') || '[]');
+  var models = JSON.parse(localStorage.getItem('braseiro_models_v2') || '[]');
+  var cod = codigo.toUpperCase();
+
+  // Find product name from catalog
+  var prodNome = '';
+  for (var mi = 0; mi < models.length; mi++) {
+    var m = models[mi];
+    if (m.codigo.toUpperCase() === cod) { prodNome = m.nome.toUpperCase(); break; }
+    var vars = m.variacoes || [];
+    for (var vi = 0; vi < vars.length; vi++) {
+      if (vars[vi].codigo.toUpperCase() === cod) { prodNome = m.nome.toUpperCase(); break; }
+    }
+    if (prodNome) break;
+  }
+
+  var prefix = cod.split('-')[0]; // BACV from BACV-0001-RES
+
+  var found = null;
+  for (var pi = 0; pi < prices.length; pi++) {
+    var p = prices[pi];
+    var pc = (p.codigo || '').toUpperCase();
+    var pp = (p.produto || '').toUpperCase();
+    if (pc === cod || cod.startsWith(pc) || pc.startsWith(cod) ||
+        (prodNome && (pp.includes(prodNome) || prodNome.includes(pp))) ||
+        (prefix.length > 2 && pc.startsWith(prefix))) {
+      found = p; break;
+    }
+  }
+
+  if (found && found.custoTotal > 0) {
+    return '<span style="color:var(--gold);font-weight:700" title="Custo calculado (Módulo Preços)">R$' + found.custoTotal.toFixed(2) + '</span>';
+  }
+  return custoRaw ? '<span>R$' + (typeof custoRaw === 'number' ? custoRaw.toFixed(2) : custoRaw) + '</span>' : '<span style="color:var(--ash)">—</span>';
+}
+
+function renderAll() { renderStock(); updateCounts(); }
+
+function renderStock() {
+  var body = document.getElementById('tbStock');
+  var q    = (document.getElementById('busca').value||'').toLowerCase();
+  var items = filtroLoc==='todos' ? stock : stock.filter(function(s){ return s.local===filtroLoc; });
+  if (q) items = items.filter(function(s){ return s.codigo.toLowerCase().includes(q)||s.nome.toLowerCase().includes(q); });
+
+  if (items.length===0) {
+    body.innerHTML = '<tr class="erow"><td colspan="7">Nenhum item no estoque.</td></tr>'; return;
+  }
+
+  var LOC = { texas:'Texas 🇺🇸', brasil:'Brasil 🇧🇷', transito:'Em Trânsito 🚢', consignado:'Consignado 🤝' };
+  var CLS = { texas:'lt', brasil:'lb', transito:'ltr', consignado:'lc' };
+
+  body.innerHTML = items.map(function(s) {
+    var disp = (s.qtd||0)-(s.reservado||0);
+    return '<tr>'
+      + '<td><div style="font-size:10px;color:var(--ash)">'+s.codigo+'</div><div style="font-weight:600;color:var(--cream)">'+s.nome+'</div></td>'
+      + '<td><span class="lbadge '+(CLS[s.local]||'')+'">'+LOC[s.local]+'</span></td>'
+      + '<td style="text-align:center;font-size:16px;font-weight:700">'+(s.qtd||0)+'</td>'
+      + '<td style="text-align:center;color:var(--ash)">'+(s.reservado||0)+'</td>'
+      + '<td style="text-align:center;font-size:16px;font-weight:700;color:'+(disp>0?'var(--green)':'var(--ember)')+'">'+disp+'</td>'
+      + '<td style="color:var(--ash)">'+getCusto(s.codigo,s.custo)+'</td>'
+      + '<td><div class="row-acts">'
+      + '<button class="ib" onclick="abrirMov(\''+s.codigo+'\')" title="Movimentar">⇄</button>'
+      + '<button class="ib" onclick="abrirAdd({codigo:\''+s.codigo+'\',nome:\''+s.nome.replace(/'/g,"\\'").replace(/"/g,'&quot;')+'\',local:\''+s.local+'\',custo:'+(s.custo||0)+'})" title="Adicionar mais">+</button>'
+      + '<button class="ib" onclick="editarItem('+s.id+')" title="Editar">✏️</button>'
+      + '<button class="ib" onclick="excluirItem('+s.id+')" title="Excluir" style="color:var(--ember)">🗑</button>'
+      + '</div></td></tr>';
+  }).join('');
+}
+
+function renderMov() {
+  var body = document.getElementById('tbMov');
+  var MC = { entrada:'#4caf7a', saida:'#c44a1a', transferencia:'#5b9cf6', reserva:'#f59e0b', devolucao:'#a78bfa', descarte:'#6b6b6b' };
+  var ML = { entrada:'Entrada', saida:'Saída', transferencia:'Transferência', reserva:'Reserva', devolucao:'Devolução', descarte:'Descarte' };
+  if (movs.length===0) { body.innerHTML='<tr class="erow"><td colspan="6">Nenhuma movimentação.</td></tr>'; return; }
+  body.innerHTML = movs.slice(0,60).map(function(m){
+    return '<tr>'
+      +'<td style="color:var(--ash);font-size:11px">'+fdata(m.data)+'</td>'
+      +'<td><span style="background:'+(MC[m.tipo]||'#6b6b6b')+'22;color:'+(MC[m.tipo]||'#6b6b6b')+';padding:2px 8px;border-radius:3px;font-size:10px;font-weight:700">'+(ML[m.tipo]||m.tipo)+'</span></td>'
+      +'<td><div style="font-size:12px;font-weight:700;color:var(--gold)">'+m.codigo+'</div><div style="font-size:11px;color:var(--ash)">'+(m.nomeProd||'')+'</div></td>'
+      +'<td style="text-align:center;font-weight:700">'+m.qtd+'</td>'
+      +'<td style="font-size:11px;color:var(--ash)">'+(m.destino?m.local+' → '+m.destino:m.local)+'</td>'
+      +'<td style="font-size:11px;color:var(--ash)">'+(m.obs||'')+'</td>'
+      +'</tr>';
+  }).join('');
+}
+
+function updateCounts() {
+  var locs = { texas:0, brasil:0, transito:0, consig:0 };
+  stock.forEach(function(s){
+    if(s.local==='texas') locs.texas+=s.qtd||0;
+    else if(s.local==='brasil') locs.brasil+=s.qtd||0;
+    else if(s.local==='transito') locs.transito+=s.qtd||0;
+    else if(s.local==='consignado') locs.consig+=s.qtd||0;
+  });
+  Object.keys(locs).forEach(function(k){ var el=document.getElementById('cnt-'+k); if(el) el.innerHTML=locs[k]+' <span>peças</span>'; });
+  var tot=stock.reduce(function(a,s){return a+(s.qtd||0);},0);
+  var res=stock.reduce(function(a,s){return a+(s.reservado||0);},0);
+  document.getElementById('sumT').innerHTML=tot+' <span>peças</span>';
+  document.getElementById('sumR').innerHTML=res+' <span>peças</span>';
+  document.getElementById('sumD').innerHTML=(tot-res)+' <span>peças</span>';
+}
+
+function limparHistorico() {
+  if (!confirm('Limpar todo o histórico de movimentações?\nOs itens em estoque NÃO serão afetados.')) return;
+  movs = [];
+  localStorage.setItem('braseiro_movimentos', JSON.stringify([]));
+  renderMov();
+  msg('Histórico limpo!');
+}
+
+// Reload when tab becomes visible
+document.addEventListener('visibilitychange', function() {
+  if (!document.hidden) {
+    stock = JSON.parse(localStorage.getItem('braseiro_stock')||'[]');
+    movs  = JSON.parse(localStorage.getItem('braseiro_movimentos')||'[]');
+    renderAll();
+  }
+});
+
+// ── Init ──
+document.getElementById('aDat').value = hoje();
+document.getElementById('mDat').value = hoje();
+renderAll();
+</script>
+</body>
+</html>

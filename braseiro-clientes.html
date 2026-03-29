@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Braseiro Premium Knives — Clientes</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --black:#0a0a0a;--charcoal:#141414;--steel:#1e1e1e;--iron:#2a2a2a;
+  --smoke:#3a3a3a;--ash:#6b6b6b;--silver:#a8a8a8;--light:#e8e4de;
+  --cream:#f5f1eb;--gold:#c9a84c;--gold-light:#e8c96b;--ember:#c44a1a;
+  --green:#4caf7a;--blue:#5b9cf6;--purple:#a78bfa;--pink:#f472b6;
+  --border:rgba(201,168,76,.2);--border-h:rgba(201,168,76,.5);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--black);color:var(--light);font-family:'Rajdhani',sans-serif;min-height:100vh}
+body::before{content:'';position:fixed;inset:0;background:
+  radial-gradient(ellipse 70% 50% at 10% 90%,rgba(167,139,250,.05) 0%,transparent 60%),
+  radial-gradient(ellipse 60% 40% at 90% 10%,rgba(201,168,76,.05) 0%,transparent 50%),
+  repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(255,255,255,.004) 2px,rgba(255,255,255,.004) 3px);
+  pointer-events:none;z-index:0}
+
+header{position:sticky;top:0;z-index:100;background:rgba(10,10,10,.96);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);padding:0 40px;display:flex;align-items:center;
+  justify-content:space-between;height:70px}
+.logo{display:flex;align-items:center;gap:14px}
+.logo svg{width:36px;height:36px}
+.logo-text span:first-child{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;letter-spacing:.05em;color:var(--gold);display:block}
+.logo-text span:last-child{font-size:9px;letter-spacing:.25em;color:var(--ash);text-transform:uppercase;display:block;margin-top:2px}
+.nav{display:flex;gap:6px}
+.nb{padding:7px 16px;background:transparent;border:1px solid transparent;color:var(--ash);
+  font-family:'Rajdhani',sans-serif;font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+  cursor:pointer;border-radius:2px;transition:all .2s;position:relative}
+.nb.active{border-color:var(--border);color:var(--gold);background:rgba(201,168,76,.06)}
+.nb:hover:not(.active):not(.dis){color:var(--silver);border-color:rgba(255,255,255,.08)}
+.nb.dis{opacity:.3;cursor:not-allowed}
+.nbadge{position:absolute;top:-4px;right:-4px;background:var(--ember);color:#fff;font-size:8px;padding:1px 4px;border-radius:10px}
+
+main{position:relative;z-index:1;max-width:1400px;margin:0 auto;padding:40px 40px 80px}
+
+.ph{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:32px;padding-bottom:22px;border-bottom:1px solid var(--border)}
+.ph h1{font-family:'Cormorant Garamond',serif;font-size:42px;font-weight:300;color:var(--cream);line-height:1}
+.ph h1 em{font-style:italic;color:var(--gold)}
+.ph p{margin-top:8px;font-size:13px;color:var(--ash);letter-spacing:.1em;text-transform:uppercase}
+
+/* Stats */
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--border);
+  border:1px solid var(--border);border-radius:4px;margin-bottom:28px;overflow:hidden}
+.stat{background:var(--charcoal);padding:15px 20px}
+.stat-l{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--ash)}
+.stat-v{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:600;color:var(--cream);line-height:1;margin-top:2px}
+.stat-v span{font-size:12px;color:var(--ash);font-family:'Rajdhani',sans-serif;font-weight:400}
+.stat-v.gold{color:var(--gold)}
+.stat-v.green{color:var(--green)}
+
+/* Filters */
+.top-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px}
+.filters{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.filter-pill{padding:6px 14px;background:var(--steel);border:1px solid rgba(255,255,255,.08);
+  border-radius:20px;font-size:11px;color:var(--silver);cursor:pointer;transition:all .2s;letter-spacing:.06em}
+.filter-pill:hover{border-color:var(--border);color:var(--gold)}
+.filter-pill.active{background:rgba(201,168,76,.1);border-color:rgba(201,168,76,.4);color:var(--gold)}
+.search-wrap{position:relative}
+.search-wrap svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--ash);pointer-events:none}
+.search-wrap input{background:var(--steel);border:1px solid rgba(255,255,255,.08);border-radius:3px;
+  padding:8px 14px 8px 34px;color:var(--light);font-family:'Rajdhani',sans-serif;font-size:13px;
+  outline:none;transition:all .2s;width:260px}
+.search-wrap input:focus{border-color:rgba(201,168,76,.4);background:var(--iron)}
+
+/* Tabs */
+.tabs{display:flex;gap:2px;background:var(--charcoal);border:1px solid var(--border);border-radius:4px;padding:4px;width:fit-content;margin-bottom:24px}
+.tab{padding:8px 20px;border:none;background:transparent;color:var(--ash);font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;border-radius:3px;transition:all .2s}
+.tab.active{background:var(--gold);color:var(--black)}
+
+/* Client grid */
+.clients-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+.client-card{background:var(--charcoal);border:1px solid var(--border);border-radius:4px;
+  overflow:hidden;transition:all .25s;cursor:pointer;animation:ci .35s ease both}
+@keyframes ci{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.client-card:hover{border-color:var(--border-h);transform:translateY(-2px);box-shadow:0 12px 32px rgba(0,0,0,.4)}
+
+.cc-top{padding:18px 20px 14px;display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.cc-avatar{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--black);flex-shrink:0}
+.cc-info{flex:1}
+.cc-name{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--cream);line-height:1.2}
+.cc-company{font-size:12px;color:var(--silver);margin-top:2px}
+.cc-type{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:2px;font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-top:6px}
+
+/* Type colors */
+.t-colecionador{background:rgba(201,168,76,.12);color:var(--gold);border:1px solid rgba(201,168,76,.25)}
+.t-empresa{background:rgba(91,156,246,.12);color:var(--blue);border:1px solid rgba(91,156,246,.25)}
+.t-revendedor{background:rgba(76,175,122,.12);color:var(--green);border:1px solid rgba(76,175,122,.25)}
+.t-influencer{background:rgba(244,114,182,.12);color:var(--pink);border:1px solid rgba(244,114,182,.25)}
+.t-rifa{background:rgba(167,139,250,.12);color:var(--purple);border:1px solid rgba(167,139,250,.25)}
+
+.cc-contact{padding:0 20px 14px;display:flex;flex-direction:column;gap:5px}
+.cc-contact-row{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--silver)}
+.cc-contact-row svg{flex-shrink:0;color:var(--ash)}
+
+.cc-stats{display:grid;grid-template-columns:1fr 1fr 1fr;border-top:1px solid rgba(255,255,255,.05)}
+.cc-stat{padding:10px 14px;text-align:center;border-right:1px solid rgba(255,255,255,.05)}
+.cc-stat:last-child{border-right:none}
+.cc-stat-l{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--ash)}
+.cc-stat-v{font-size:15px;font-weight:700;color:var(--cream);margin-top:2px}
+.cc-stat-v.gold{color:var(--gold)}
+
+.cc-footer{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;
+  background:rgba(255,255,255,.02);border-top:1px solid rgba(255,255,255,.04)}
+.cc-bday{font-size:11px;color:var(--ash)}
+.cc-acts{display:flex;gap:5px}
+.ib{width:27px;height:27px;background:var(--steel);border:1px solid rgba(255,255,255,.06);border-radius:2px;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--ash);transition:all .2s}
+.ib:hover{background:var(--iron);color:var(--gold);border-color:var(--border)}
+.ib.danger:hover{color:var(--ember)}
+
+/* VIP badge */
+.vip-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 7px;background:rgba(201,168,76,.15);
+  border:1px solid rgba(201,168,76,.3);border-radius:2px;font-size:9px;color:var(--gold);font-weight:700;margin-left:6px}
+
+/* Note badge */
+.note-preview{margin:0 20px 14px;padding:8px 12px;background:rgba(255,255,255,.03);
+  border-left:2px solid rgba(201,168,76,.3);border-radius:0 3px 3px 0;
+  font-size:11px;color:var(--ash);line-height:1.4;font-style:italic}
+
+/* Buttons */
+.btn-p{display:flex;align-items:center;gap:8px;padding:11px 22px;background:var(--gold);color:var(--black);border:none;font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;border-radius:2px;transition:all .25s}
+.btn-p:hover{background:var(--gold-light);box-shadow:0 6px 20px rgba(201,168,76,.25)}
+.btn-s{display:flex;align-items:center;gap:8px;padding:9px 18px;background:transparent;color:var(--silver);border:1px solid var(--border);font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;border-radius:2px;transition:all .2s}
+.btn-s:hover{border-color:var(--border-h);color:var(--gold)}
+
+/* Detail panel */
+.detail-layout{display:grid;grid-template-columns:360px 1fr;gap:20px;align-items:start}
+.detail-card{background:var(--charcoal);border:1px solid var(--border);border-radius:4px;overflow:hidden;position:sticky;top:90px}
+.dc-header{padding:24px;border-bottom:1px solid rgba(255,255,255,.06);text-align:center}
+.dc-avatar{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:600;color:var(--black);margin:0 auto 12px}
+.dc-name{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:600;color:var(--cream)}
+.dc-section{padding:16px 20px;border-bottom:1px solid rgba(255,255,255,.05)}
+.dc-section:last-child{border-bottom:none}
+.dc-section-title{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--ash);margin-bottom:10px}
+.dc-row{display:flex;justify-content:space-between;align-items:flex-start;padding:5px 0;gap:12px}
+.dc-label{font-size:11px;color:var(--ash);flex-shrink:0}
+.dc-value{font-size:12px;color:var(--cream);font-weight:600;text-align:right}
+
+.history-list{display:flex;flex-direction:column;gap:10px}
+.history-item{background:var(--charcoal);border:1px solid var(--border);border-radius:3px;padding:14px 16px;
+  display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;animation:ci .3s ease both}
+.hi-prod{font-size:13px;font-weight:600;color:var(--cream)}
+.hi-meta{font-size:11px;color:var(--ash);margin-top:2px}
+.hi-val{font-size:16px;font-weight:700;color:var(--gold);text-align:right}
+.hi-date{font-size:10px;color:var(--ash);text-align:right;margin-top:2px}
+
+/* Modal */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(8px);z-index:200;
+  display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .3s}
+.overlay.open{opacity:1;pointer-events:all}
+.modal{background:var(--charcoal);border:1px solid var(--border);border-radius:6px;width:100%;
+  max-width:680px;max-height:92vh;overflow-y:auto;transform:translateY(24px);transition:transform .3s}
+.overlay.open .modal{transform:translateY(0)}
+.mh{padding:22px 28px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;
+  align-items:flex-start;position:sticky;top:0;background:var(--charcoal);z-index:2}
+.mh h2{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:400;color:var(--cream)}
+.mh p{font-size:11px;color:var(--ash);letter-spacing:.1em;text-transform:uppercase;margin-top:3px}
+.xbtn{width:32px;height:32px;background:var(--steel);border:1px solid var(--border);border-radius:2px;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--ash);transition:all .2s;flex-shrink:0}
+.xbtn:hover{color:var(--cream);border-color:var(--border-h)}
+.mb{padding:22px 28px}
+.mf{padding:14px 28px 22px;display:flex;justify-content:flex-end;gap:10px;border-top:1px solid var(--border)}
+
+/* Form */
+.fsec{margin-bottom:22px}
+.fsec-title{display:flex;align-items:center;gap:10px;margin-bottom:13px}
+.fsec-title h3{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);font-weight:600}
+.fsec-title::after{content:'';flex:1;height:1px;background:var(--border)}
+.fg{display:grid;gap:12px;margin-bottom:12px}
+.fg.c2{grid-template-columns:1fr 1fr}
+.fg.c3{grid-template-columns:1fr 1fr 1fr}
+.ff{display:flex;flex-direction:column;gap:5px}
+.ff.full{grid-column:1/-1}
+label{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--ash);font-weight:600}
+input,select,textarea{background:var(--steel);border:1px solid rgba(255,255,255,.08);border-radius:3px;
+  padding:9px 13px;color:var(--light);font-family:'Rajdhani',sans-serif;font-size:14px;transition:all .2s;outline:none;width:100%}
+input:focus,select:focus,textarea:focus{border-color:rgba(201,168,76,.4);background:var(--iron);box-shadow:0 0 0 3px rgba(201,168,76,.06)}
+select option{background:var(--steel)}
+textarea{min-height:70px;resize:vertical}
+
+/* Prefs tags */
+.pref-tags{display:flex;flex-wrap:wrap;gap:7px}
+.ptag{display:flex;align-items:center;gap:5px;padding:5px 11px;background:var(--steel);
+  border:1px solid rgba(255,255,255,.08);border-radius:3px;font-size:11px;color:var(--silver);
+  cursor:pointer;transition:all .2s;user-select:none}
+.ptag:hover{border-color:rgba(201,168,76,.3);color:var(--gold)}
+.ptag.sel{background:rgba(201,168,76,.1);border-color:rgba(201,168,76,.4);color:var(--gold)}
+
+/* Toggle */
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;
+  background:var(--steel);border:1px solid rgba(255,255,255,.06);border-radius:3px}
+.toggle-label{font-size:13px;color:var(--silver);display:flex;align-items:center;gap:8px}
+.toggle{position:relative;width:40px;height:22px}
+.toggle input{opacity:0;width:0;height:0}
+.toggle-track{position:absolute;inset:0;background:var(--smoke);border-radius:22px;cursor:pointer;transition:background .2s}
+.toggle input:checked+.toggle-track{background:var(--gold)}
+.toggle-track::after{content:'';position:absolute;left:3px;top:3px;width:16px;height:16px;background:#fff;border-radius:50%;transition:transform .2s}
+.toggle input:checked+.toggle-track::after{transform:translateX(18px)}
+
+/* Birthday upcoming */
+.bday-alert{display:flex;align-items:center;gap:8px;padding:8px 12px;background:rgba(201,168,76,.07);
+  border:1px solid rgba(201,168,76,.2);border-radius:3px;font-size:12px;color:var(--gold);margin-bottom:20px}
+
+/* Empty */
+.empty{display:flex;flex-direction:column;align-items:center;padding:70px 40px;text-align:center;color:var(--ash)}
+.empty svg{margin-bottom:16px;opacity:.25}
+.empty h3{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--silver);margin-bottom:6px;font-weight:300}
+.empty p{font-size:13px;max-width:320px;line-height:1.6;margin-bottom:20px}
+
+.toast{position:fixed;bottom:32px;right:32px;background:var(--charcoal);border:1px solid var(--gold);
+  border-radius:4px;padding:13px 18px;display:flex;align-items:center;gap:10px;font-size:13px;
+  color:var(--cream);box-shadow:0 20px 40px rgba(0,0,0,.5);transform:translateY(20px);
+  opacity:0;transition:all .3s;z-index:300;pointer-events:none}
+.toast.show{transform:translateY(0);opacity:1}
+
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:var(--charcoal)}
+::-webkit-scrollbar-thumb{background:var(--smoke);border-radius:3px}
+.clients-list{display:flex;flex-direction:column;gap:5px}
+.client-row{display:flex;align-items:center;gap:12px;background:var(--charcoal);border:1px solid var(--border);border-radius:4px;padding:10px 14px;cursor:pointer;transition:all .2s}
+.client-row:hover{border-color:var(--border-h);background:rgba(201,168,76,.03)}
+.cr-avatar{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:#fff;flex-shrink:0}
+.cr-info{flex:1;min-width:0}
+.cr-name{font-size:14px;font-weight:600;color:var(--cream);font-family:'Cormorant Garamond',serif}
+.cr-meta{font-size:11px;color:var(--ash);margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cr-stats{text-align:right;min-width:100px;flex-shrink:0}
+.cr-acts{display:flex;gap:5px;flex-shrink:0}
+
+@media(max-width:900px){
+  header{padding:0 20px}main{padding:24px 20px 60px}
+  .stats{grid-template-columns:1fr 1fr}
+  .detail-layout{grid-template-columns:1fr}
+  .nav{display:none}
+  .fg.c2,.fg.c3{grid-template-columns:1fr}
+}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPA_URL = 'https://mibylztsvhhhmnsoipac.supabase.co';
+const SUPA_KEY = 'sb_publishable_a7X5JlFdtqwzaE9bB5TsGg_09zvlle-';
+const supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+let supaReady = false;
+async function initSupa(){
+  const {error} = await supa.from('clients').select('id',{count:'exact',head:true});
+  supaReady = !error;
+  if(supaReady) showToast('✅ Conectado ao banco de dados');
+  else showToast('⚠️ Modo offline — dados locais', true);
+}
+</script>
+
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <svg viewBox="0 0 40 40" fill="none"><path d="M8 32 L28 8 L34 14 L16 36 Z" fill="none" stroke="#c9a84c" stroke-width="1.5"/><path d="M28 8 L34 14 L32 16 L26 10 Z" fill="#c9a84c" opacity="0.6"/><path d="M8 32 L12 34 L16 36 L14 32 Z" fill="#c44a1a" opacity="0.8"/><circle cx="31" cy="11" r="2" fill="#c9a84c" opacity="0.4"/></svg>
+    <div class="logo-text"><span>Braseiro Premium Knives</span><span>Sistema de Gestão</span></div>
+  </div>
+  <nav class="nav">
+    <button class="nb" onclick="location.href='braseiro-index.html'" style="color:var(--gold);border-color:var(--border)">← Início</button>
+    <button class="nb dis">Produtos</button>
+    <button class="nb dis">Preços</button>
+    <button class="nb dis">Estoque</button>
+    <button class="nb dis">Vendas</button>
+    <button class="nb active">Clientes</button>
+    <button class="nb dis">Dashboard <span class="nbadge">Em breve</span></button>
+  </nav>
+</header>
+
+<main>
+  <div class="ph">
+    <div>
+      <h1>Cadastro de <em>Clientes</em></h1>
+      <p>Módulo 5 — CRM · histórico · aniversários · notas</p>
+    </div>
+    <div style="display:flex;gap:10px;align-items:center">
+      <div style="display:flex;gap:2px;background:var(--steel);border:1px solid var(--border);border-radius:3px;padding:3px">
+        <button id="cBtnGrid" onclick="setViewC('grid')" title="Grade" style="width:30px;height:26px;border:none;border-radius:2px;cursor:pointer;font-size:14px;transition:all .2s;background:var(--gold);color:var(--black)">⊞</button>
+        <button id="cBtnList" onclick="setViewC('list')" title="Lista" style="width:30px;height:26px;border:none;border-radius:2px;cursor:pointer;font-size:14px;transition:all .2s;background:transparent;color:var(--ash)">☰</button>
+      </div>
+      <button class="btn-p" onclick="openClientModal()">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Novo Cliente
+      </button>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats">
+    <div class="stat"><div class="stat-l">Total de Clientes</div><div class="stat-v" id="stTotal">0 <span>clientes</span></div></div>
+    <div class="stat"><div class="stat-l">Clientes VIP</div><div class="stat-v gold" id="stVip">0 <span>VIPs</span></div></div>
+    <div class="stat"><div class="stat-l">Receita Total</div><div class="stat-v gold" id="stReceita">R$ 0</div></div>
+    <div class="stat"><div class="stat-l">Ticket Médio</div><div class="stat-v" id="stTicket">R$ 0</div></div>
+    <div class="stat"><div class="stat-l">Aniversários este mês</div><div class="stat-v green" id="stBday">0 <span>clientes</span></div></div>
+  </div>
+
+  <!-- Birthday alert -->
+  <div id="bdayAlert" style="display:none"></div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('cards')">Cartões</button>
+    <button class="tab" onclick="switchTab('detalhe')">Detalhe & Histórico</button>
+  </div>
+
+  <!-- Top bar -->
+  <div class="top-bar">
+    <div class="filters">
+      <div class="filter-pill active" onclick="setFilter('todos',this)">Todos</div>
+      <div class="filter-pill" onclick="setFilter('colecionador',this)">💎 Colecionador</div>
+      <div class="filter-pill" onclick="setFilter('empresa',this)">🏢 Empresa</div>
+      <div class="filter-pill" onclick="setFilter('revendedor',this)">🤝 Revendedor</div>
+      <div class="filter-pill" onclick="setFilter('influencer',this)">📸 Influencer</div>
+      <div class="filter-pill" onclick="setFilter('rifa',this)">🎟️ Rifa/Leilão</div>
+      <div class="filter-pill" onclick="setFilter('vip',this)">⭐ VIP</div>
+    </div>
+    <div class="search-wrap">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Buscar cliente..." oninput="renderClients()" id="searchInput">
+    </div>
+  </div>
+
+  <!-- TAB: Cards -->
+  <div id="tabCards">
+    <div class="clients-grid" id="clientsGrid"></div>
+    <div class="empty" id="emptyState">
+      <svg width="52" height="52" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      <h3>Nenhum cliente cadastrado</h3>
+      <p>Cadastre seus clientes aqui. Eles ficarão disponíveis para seleção ao registrar uma venda.</p>
+      <button class="btn-p" onclick="openClientModal()">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Cadastrar Primeiro Cliente
+      </button>
+    </div>
+  </div>
+
+  <!-- TAB: Detail -->
+  <div id="tabDetalhe" style="display:none">
+    <div class="detail-layout">
+      <div>
+        <div style="margin-bottom:14px">
+          <select id="clientSelect" onchange="showDetail(parseInt(this.value))"
+            style="width:100%;padding:10px 14px;font-size:14px;background:var(--steel);border:1px solid var(--border);border-radius:3px;color:var(--cream);font-family:'Rajdhani',sans-serif;outline:none">
+            <option value="">Selecione um cliente...</option>
+          </select>
+        </div>
+        <div class="detail-card" id="detailCard">
+          <div style="padding:40px;text-align:center;color:var(--ash)">
+            <p style="font-size:13px">Selecione um cliente acima para ver os detalhes</p>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ash);margin-bottom:14px">Histórico de Compras</div>
+        <div id="historyList">
+          <div style="padding:40px;text-align:center;color:var(--smoke);font-size:13px">Selecione um cliente</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- ══ MODAL: VISUALIZAR CLIENTE ══ -->
+<div class="overlay" id="cViewOverlay" onclick="if(event.target===this)closeModal('cViewOverlay')">
+  <div class="modal" style="max-width:600px">
+    <div class="mh">
+      <div>
+        <h2 id="cViewTitle">Cliente</h2>
+        <p id="cViewSub" style="font-size:11px;color:var(--ash);letter-spacing:.08em;margin-top:3px"></p>
+      </div>
+      <button class="xbtn" onclick="closeModal('cViewOverlay')">✕</button>
+    </div>
+    <div class="mb" id="cViewBody"></div>
+  </div>
+</div>
+
+<!-- ══ MODAL: CLIENT ══ -->
+<div class="overlay" id="clientOverlay" onclick="handleOv(event,'clientOverlay')">
+  <div class="modal">
+    <div class="mh">
+      <div><h2 id="mTitle">Novo Cliente</h2><p id="mSub">Preencha os dados do cliente</p></div>
+      <button class="xbtn" onclick="closeModal('clientOverlay')">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="mb">
+
+      <!-- Tipo -->
+      <div class="fsec">
+        <div class="fsec-title"><h3>Tipo de Cliente</h3></div>
+        <div class="fg c3">
+          <div class="ff">
+            <label>Tipo *</label>
+            <select id="cTipo">
+              <option value="colecionador">💎 Colecionador</option>
+              <option value="empresa">🏢 Empresa / Corporativo</option>
+              <option value="revendedor">🤝 Revendedor / Loja</option>
+              <option value="influencer">📸 Influencer / Parceiro</option>
+              <option value="rifa">🎟️ Rifa / Leilão</option>
+            </select>
+          </div>
+          <div class="ff">
+            <label>País</label>
+            <select id="cPais">
+              <option value="EUA">🇺🇸 EUA</option>
+              <option value="Brasil">🇧🇷 Brasil</option>
+              <option value="Outro">Outro</option>
+            </select>
+          </div>
+          <div class="ff" style="justify-content:flex-end">
+            <label>&nbsp;</label>
+            <div class="toggle-row">
+              <span class="toggle-label">⭐ Cliente VIP</span>
+              <label class="toggle"><input type="checkbox" id="cVip"><span class="toggle-track"></span></label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Identificação -->
+      <div class="fsec">
+        <div class="fsec-title"><h3>Identificação</h3></div>
+        <div class="fg c2">
+          <div class="ff">
+            <label>Nome Completo *</label>
+            <input type="text" id="cNome" placeholder="Nome ou nome da empresa">
+          </div>
+          <div class="ff">
+            <label>Empresa / Organização</label>
+            <input type="text" id="cEmpresa" placeholder="Opcional">
+          </div>
+        </div>
+        <div class="fg c2">
+          <div class="ff">
+            <label>Aniversário</label>
+            <input type="date" id="cBday" placeholder="Para follow-up">
+          </div>
+          <div class="ff">
+            <label>Canal de origem</label>
+            <select id="cOrigem">
+              <option value="">Como nos conheceu...</option>
+              <option>Instagram</option><option>WhatsApp</option><option>Indicação</option>
+              <option>Amazon</option><option>Etsy</option><option>TikTok</option>
+              <option>Site</option><option>Feira/Evento</option><option>Rifa</option><option>Leilão</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contato -->
+      <div class="fsec">
+        <div class="fsec-title"><h3>Contato</h3></div>
+        <div class="fg c2">
+          <div class="ff">
+            <label>WhatsApp</label>
+            <input type="text" id="cWhats" placeholder="+1 (555) 000-0000">
+          </div>
+          <div class="ff">
+            <label>Email</label>
+            <input type="text" id="cEmail" placeholder="email@exemplo.com">
+          </div>
+        </div>
+        <div class="fg c2">
+          <div class="ff">
+            <label>Instagram</label>
+            <input type="text" id="cInsta" placeholder="@handle">
+          </div>
+          <div class="ff">
+            <label>Outro contato</label>
+            <input type="text" id="cOutro" placeholder="Telegram, LinkedIn...">
+          </div>
+        </div>
+      </div>
+
+      <!-- Endereço -->
+      <div class="fsec">
+        <div class="fsec-title"><h3>Endereço de Entrega</h3></div>
+        <div class="fg c2">
+          <div class="ff">
+            <label>Cidade / Estado</label>
+            <input type="text" id="cCidade" placeholder="Ex: Houston, TX">
+          </div>
+          <div class="ff">
+            <label>CEP / ZIP Code</label>
+            <input type="text" id="cCep" placeholder="Ex: 77001">
+          </div>
+        </div>
+        <div class="ff">
+          <label>Endereço Completo</label>
+          <textarea id="cEndereco" placeholder="Rua, número, complemento, bairro..."></textarea>
+        </div>
+      </div>
+
+      <!-- Preferências -->
+      <div class="fsec">
+        <div class="fsec-title"><h3>Preferências de Produto</h3></div>
+        <div class="pref-tags" id="prefTags">
+          <div class="ptag" onclick="this.classList.toggle('sel')">Cabo Madeira</div>
+          <div class="ptag" onclick="this.classList.toggle('sel')">Cabo Osso</div>
+          <div class="ptag" onclick="this.classList.toggle('sel')">Cabo Resina</div>
+          <div class="ptag" onclick="this.classList.toggle('sel')">Aço Damascus</div>
+          <div class="ptag" onclick="this.classList.toggle('sel')">Alto carbono</div>
+          <div class="ptag" onclick="this.classList.toggle('sel')">Aço inox</div>
+          <div class="ptag" onclick="this.classList.toggle('sel')">Faca de churrasco</div>
+          <div class="ptag" onclick="this.classList.toggle('sel')">Faca de caça</div>
+          <div class="ptag" onclick="this.classList.toggle('sel')">Faca de coleção</div>
+          <div class="ptag" onclick="this.classList.toggle('sel')">Faca custom</div>
+          <div class="ptag" onclick="this.classList.toggle('sel')">Com gravação</div>
+          <div class="ptag" onclick="this.classList.toggle('sel')">Com bainha</div>
+        </div>
+      </div>
+
+      <!-- Notas -->
+      <div class="fsec">
+        <div class="fsec-title"><h3>Notas Internas</h3></div>
+        <div class="ff">
+          <label>Observações privadas <span style="font-size:9px;color:var(--smoke);text-transform:none;letter-spacing:0;font-weight:400">(não visível ao cliente)</span></label>
+          <textarea id="cNotas" placeholder="Ex: Cliente muito detalhista, prefere contato por WhatsApp. Comprou presente para o filho em 2024. Não gosta de demora..."></textarea>
+        </div>
+      </div>
+
+    </div>
+    <div class="mf">
+      <button class="btn-s" onclick="closeModal('clientOverlay')">Cancelar</button>
+      <button class="btn-p" onclick="saveClient()">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+        Salvar Cliente
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">
+  <svg width="14" height="14" fill="none" stroke="#c9a84c" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+  <span id="toastMsg"></span>
+</div>
+
+<script>
+// ── State ──
+let clients = JSON.parse(localStorage.getItem('braseiro_clients') || '[]');
+let viewModeC = localStorage.getItem('braseiro_clients_view') || 'grid';
+let orders  = JSON.parse(localStorage.getItem('braseiro_orders') || '[]');
+let editingId = null;
+let activeFilter = 'todos';
+
+function save() {
+  localStorage.setItem('braseiro_clients', JSON.stringify(clients));
+}
+
+// Save single client to Supabase
+async function saveToCloud(client) {
+  if (!supaReady) return;
+  try {
+    const row = {
+      tipo: client.tipo, nome: client.nome, empresa: client.empresa||null,
+      pais: client.pais, vip: client.vip||false,
+      bday: client.bday||null, origem: client.origem||null,
+      whats: client.whats||null, email: client.email||null,
+      insta: client.insta||null, outro: client.outro||null,
+      cidade: client.cidade||null, cep: client.cep||null,
+      endereco: client.endereco||null, notas: client.notas||null,
+      prefs: client.prefs||[]
+    };
+    if (client._cloudId) {
+      await supa.from('clients').update(row).eq('id', client._cloudId);
+    } else {
+      const { data, error } = await supa.from('clients').insert(row).select().single();
+      if (data && !error) {
+        client._cloudId = data.id;
+        save(); // update local with cloudId
+      }
+    }
+  } catch(e) { console.error('Cloud save error:', e); }
+}
+
+async function deleteFromCloud(cloudId) {
+  if (!supaReady || !cloudId) return;
+  await supa.from('clients').delete().eq('id', cloudId);
+}
+
+// Load from cloud on startup
+async function loadFromCloud() {
+  if (!supaReady) return;
+  try {
+    const { data, error } = await supa.from('clients').select('*').order('created_at', {ascending:false});
+    if (error || !data) return;
+    // Merge cloud data into local
+    clients = data.map(row => ({
+      id: row.id, _cloudId: row.id,
+      tipo: row.tipo, nome: row.nome, empresa: row.empresa||'',
+      pais: row.pais, vip: row.vip||false,
+      bday: row.bday||'', origem: row.origem||'',
+      whats: row.whats||'', email: row.email||'',
+      insta: row.insta||'', outro: row.outro||'',
+      cidade: row.cidade||'', cep: row.cep||'',
+      endereco: row.endereco||'', notas: row.notas||'',
+      prefs: row.prefs||[],
+      criadoEm: row.created_at
+    }));
+    save();
+    renderAll();
+initSupa().then(() => loadFromCloud());
+    showToast('Dados carregados da nuvem ☁️');
+  } catch(e) { console.error('Cloud load error:', e); }
+}
+
+// ── Config ──
+const TYPE_CONFIG = {
+  colecionador:{ label:'Colecionador', cls:'t-colecionador', icon:'💎', color:'#c9a84c' },
+  empresa:     { label:'Empresa',      cls:'t-empresa',      icon:'🏢', color:'#5b9cf6' },
+  revendedor:  { label:'Revendedor',   cls:'t-revendedor',   icon:'🤝', color:'#4caf7a' },
+  influencer:  { label:'Influencer',   cls:'t-influencer',   icon:'📸', color:'#f472b6' },
+  rifa:        { label:'Rifa/Leilão',  cls:'t-rifa',         icon:'🎟️', color:'#a78bfa' },
+};
+
+const AVATAR_COLORS = ['#c9a84c','#4caf7a','#5b9cf6','#f472b6','#a78bfa','#2dd4bf','#f59e0b','#c44a1a'];
+
+function getInitials(name) {
+  return name.split(' ').slice(0,2).map(w=>w[0]||'').join('').toUpperCase() || '?';
+}
+
+function getAvatarColor(id) {
+  return AVATAR_COLORS[id % AVATAR_COLORS.length];
+}
+
+function fmtDate(d) { if(!d) return '—'; const [y,m,dd]=d.split('-'); return `${dd}/${m}/${y}`; }
+function fmtMoney(v) { return 'R$ ' + (v||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+
+function getClientOrders(clientId) {
+  const c = clients.find(x=>x.id===clientId);
+  if (!c) return [];
+  return orders.filter(o => o.cliente && c.nome && o.cliente.toLowerCase().includes(c.nome.toLowerCase().split(' ')[0]));
+}
+
+function getClientTotal(clientId) {
+  return getClientOrders(clientId).filter(o=>o.status!=='cancelado').reduce((s,o)=>s+(o.total||0),0);
+}
+
+// ── Birthday check ──
+function checkBirthdays() {
+  const now = new Date();
+  const month = now.getMonth() + 1;
+  const upcoming = clients.filter(c => {
+    if (!c.bday) return false;
+    const [,m] = c.bday.split('-');
+    return parseInt(m) === month;
+  });
+  const alert = document.getElementById('bdayAlert');
+  if (upcoming.length > 0) {
+    alert.style.display = 'flex';
+    alert.className = 'bday-alert';
+    alert.innerHTML = `🎂 <strong>Aniversários este mês:</strong> ${upcoming.map(c=>c.nome).join(', ')}`;
+  } else {
+    alert.style.display = 'none';
+  }
+  return upcoming.length;
+}
+
+// ── Filters ──
+function setFilter(f, el) {
+  activeFilter = f;
+  document.querySelectorAll('.filter-pill').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  renderClients();
+}
+
+function getFiltered() {
+  const search = document.getElementById('searchInput')?.value.toLowerCase() || '';
+  return clients.filter(c => {
+    const matchType = activeFilter==='todos' ? true
+      : activeFilter==='vip' ? c.vip
+      : c.tipo === activeFilter;
+    const matchSearch = !search || c.nome.toLowerCase().includes(search)
+      || (c.empresa||'').toLowerCase().includes(search)
+      || (c.cidade||'').toLowerCase().includes(search);
+    return matchType && matchSearch;
+  });
+}
+
+// ── Render cards ──
+function setViewC(mode) {
+  viewModeC = mode;
+  localStorage.setItem('braseiro_clients_view', mode);
+  const bg = document.getElementById('cBtnGrid');
+  const bl = document.getElementById('cBtnList');
+  if(bg){ bg.style.background=mode==='grid'?'var(--gold)':'transparent'; bg.style.color=mode==='grid'?'var(--black)':'var(--ash)'; }
+  if(bl){ bl.style.background=mode==='list'?'var(--gold)':'transparent'; bl.style.color=mode==='list'?'var(--black)':'var(--ash)'; }
+  renderClients();
+}
+
+function renderClients() {
+  const grid  = document.getElementById('clientsGrid');
+  const empty = document.getElementById('emptyState');
+  const filtered = getFiltered();
+
+  if (clients.length === 0) { grid.innerHTML=''; empty.style.display='flex'; return; }
+  empty.style.display='none';
+
+  if (filtered.length === 0) {
+    grid.innerHTML = '<div style="padding:40px;text-align:center;color:var(--ash);grid-column:1/-1;font-size:13px;">Nenhum cliente encontrado</div>';
+    return;
+  }
+
+  if (viewModeC === 'list') { renderClientList(grid, filtered); return; }
+  grid.className = 'clients-grid';
+  grid.innerHTML = filtered.map((c,i) => {
+    const tc      = TYPE_CONFIG[c.tipo] || TYPE_CONFIG.colecionador;
+    const color   = getAvatarColor(clients.indexOf(c));
+    const initials= getInitials(c.nome);
+    const total   = getClientTotal(c.id);
+    const orders_ = getClientOrders(c.id);
+    const now     = new Date();
+    const isBday  = c.bday && parseInt(c.bday.split('-')[1]) === now.getMonth()+1;
+    return `
+    <div class="client-card" style="animation-delay:${i*.04}s" onclick="viewClient(${c.id})">
+      <div class="cc-top">
+        <div class="cc-avatar" style="background:${color}">${initials}</div>
+        <div class="cc-info">
+          <div class="cc-name">${c.nome}${c.vip?'<span class="vip-badge">⭐ VIP</span>':''}</div>
+          ${c.empresa?`<div class="cc-company">${c.empresa}</div>`:''}
+          <div><span class="cc-type ${tc.cls}">${tc.icon} ${tc.label}</span>${isBday?'<span style="margin-left:6px;font-size:12px;">🎂</span>':''}</div>
+        </div>
+        <div class="cc-acts" onclick="event.stopPropagation()">
+          <button class="ib" onclick="openClientModal(${c.id})" title="Editar">
+            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          </button>
+          <button class="ib danger" onclick="deleteClient(${c.id})" title="Excluir">
+            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="cc-contact">
+        ${c.whats?`<div class="cc-contact-row"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2.18h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.11 6.11l.95-.95a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>${c.whats}</div>`:''}
+        ${c.email?`<div class="cc-contact-row"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>${c.email}</div>`:''}
+        ${c.cidade?`<div class="cc-contact-row"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>${c.cidade}, ${c.pais||''}</div>`:''}
+      </div>
+      ${c.notas?`<div class="note-preview">${c.notas.slice(0,80)}${c.notas.length>80?'...':''}</div>`:''}
+      <div class="cc-stats">
+        <div class="cc-stat"><div class="cc-stat-l">Pedidos</div><div class="cc-stat-v">${orders_.length}</div></div>
+        <div class="cc-stat"><div class="cc-stat-l">Total gasto</div><div class="cc-stat-v gold">${total>0?'R$'+Math.round(total):'—'}</div></div>
+        <div class="cc-stat"><div class="cc-stat-l">Origem</div><div class="cc-stat-v" style="font-size:12px;color:var(--silver)">${c.origem||'—'}</div></div>
+      </div>
+      ${c.bday?`<div class="cc-footer"><span class="cc-bday">🎂 ${fmtDate(c.bday)}</span><span style="font-size:10px;color:var(--ash)">${c.prefs&&c.prefs.length?c.prefs.slice(0,2).join(' · '):''}  </span></div>`:''}
+    </div>`;
+  }).join('');
+}
+
+// ── Detail view ──
+function renderClientList(grid, filtered) {
+  grid.className = 'clients-list';
+  grid.innerHTML = filtered.map((c) => {
+    const tc     = TYPE_CONFIG[c.tipo] || TYPE_CONFIG.colecionador;
+    const color  = getAvatarColor(clients.indexOf(c));
+    const initials = getInitials(c.nome);
+    const total  = getClientTotal(c.id);
+    const orders_= getClientOrders(c.id);
+    return `<div class="client-row" onclick="viewClient(${c.id})">
+      <div class="cr-avatar" style="background:${color}">${initials}</div>
+      <div class="cr-info">
+        <div class="cr-name">${c.nome}${c.vip?'<span class="vip-badge" style="margin-left:6px">⭐ VIP</span>':''}</div>
+        <div class="cr-meta"><span class="${tc.cls}" style="font-size:10px;font-weight:700;margin-right:6px">${tc.icon} ${tc.label}</span>${[c.cidade, c.pais].filter(Boolean).join(', ')}${c.whats?' · '+c.whats:''}</div>
+      </div>
+      <div class="cr-stats">
+        <div style="font-size:13px;font-weight:700;color:var(--gold)">${total>0?'R$'+total.toLocaleString('pt-BR',{minimumFractionDigits:2}):'—'}</div>
+        <div style="font-size:10px;color:var(--ash)">${orders_} pedidos</div>
+      </div>
+      <div class="cr-acts" onclick="event.stopPropagation()">
+        <button class="ib" onclick="viewClient(${c.id})" title="Visualizar">👁</button>
+        <button class="ib" onclick="openClientModal(${c.id})" title="Editar">✏️</button>
+        <button class="ib danger" onclick="deleteClient(${c.id})" title="Excluir">🗑</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function viewClient(id) {
+  const c = clients.find(x => x.id === id);
+  if (!c) return;
+  const tc     = TYPE_CONFIG[c.tipo] || TYPE_CONFIG.colecionador;
+  const color  = getAvatarColor(clients.indexOf(c));
+  const initials = getInitials(c.nome);
+  const total  = getClientTotal(c.id);
+  const orders_= getClientOrders(c.id);
+  const ordersList = JSON.parse(localStorage.getItem('braseiro_orders')||'[]').filter(o => o.clienteId === id || o.cliente === c.nome);
+
+  document.getElementById('cViewTitle').textContent = c.nome;
+  document.getElementById('cViewSub').textContent   = tc.icon + ' ' + tc.label + (c.empresa ? ' · ' + c.empresa : '');
+
+  document.getElementById('cViewBody').innerHTML = `
+    <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px">
+      <div style="width:60px;height:60px;border-radius:50%;background:${color};display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:#fff;flex-shrink:0">${initials}</div>
+      <div>
+        <div style="font-size:20px;font-family:'Cormorant Garamond',serif;font-weight:600;color:var(--cream)">${c.nome}${c.vip?'<span class="vip-badge" style="margin-left:8px">⭐ VIP</span>':''}</div>
+        <div style="font-size:12px;color:var(--ash);margin-top:3px">${[c.cidade, c.pais].filter(Boolean).join(', ')}</div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px">
+      ${[
+        ['WhatsApp', c.whats], ['Email', c.email],
+        ['Cidade', c.cidade], ['País', c.pais],
+        ['Origem', c.origem], ['Aniversário', c.bday ? fmtDate(c.bday) : null],
+        ['Total Gasto', total > 0 ? 'R$ '+total.toLocaleString('pt-BR',{minimumFractionDigits:2}) : null],
+        ['Pedidos', orders_ > 0 ? orders_+' pedidos' : null],
+      ].filter(([,v])=>v).map(([l,v])=>`
+        <div style="background:var(--steel);border-radius:3px;padding:8px 12px">
+          <div style="font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--ash)">${l}</div>
+          <div style="font-size:13px;font-weight:600;color:var(--cream);margin-top:2px">${v}</div>
+        </div>`).join('')}
+    </div>
+    ${c.notas ? `<div style="background:var(--steel);border-radius:3px;padding:10px 14px;margin-bottom:16px;font-size:13px;color:var(--silver);line-height:1.6;font-style:italic">"${c.notas}"</div>` : ''}
+    ${c.prefs && c.prefs.length ? `<div style="margin-bottom:16px"><div style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ash);margin-bottom:6px">Preferências</div><div style="display:flex;flex-wrap:wrap;gap:4px">${c.prefs.map(p=>`<span style="background:var(--steel);border:1px solid var(--border);border-radius:3px;padding:3px 10px;font-size:11px;color:var(--silver)">${p}</span>`).join('')}</div></div>` : ''}
+    ${ordersList.length > 0 ? `
+      <div style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ash);margin-bottom:8px">Pedidos recentes</div>
+      ${ordersList.slice(0,5).map(o=>`
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:var(--steel);border-radius:3px;margin-bottom:4px">
+          <div><div style="font-size:12px;font-weight:700;color:var(--gold)">${o.numero}</div><div style="font-size:10px;color:var(--ash)">${o.canal||''} · ${o.dataPedido||''}</div></div>
+          <div style="text-align:right"><div style="font-size:13px;font-weight:700;color:var(--cream)">R$ ${(o.total||0).toLocaleString('pt-BR',{minimumFractionDigits:2})}</div><div style="font-size:10px;color:var(--ash)">${o.status||''}</div></div>
+        </div>`).join('')}` : ''}
+    <div style="display:flex;gap:8px;margin-top:16px">
+      <button class="btn-p" onclick="closeModal('cViewOverlay');openClientModal(${id})" style="font-size:11px">✏️ Editar Cliente</button>
+    </div>
+  `;
+  openModal('cViewOverlay');
+}
+
+function openClientDetail(id) {
+  switchTab('detalhe');
+  const sel = document.getElementById('clientSelect');
+  sel.value = id;
+  showDetail(id);
+}
+
+function showDetail(id) {
+  if (!id) return;
+  const c = clients.find(x=>x.id===id);
+  if (!c) return;
+  const tc     = TYPE_CONFIG[c.tipo] || TYPE_CONFIG.colecionador;
+  const color  = getAvatarColor(clients.indexOf(c));
+  const orders_= getClientOrders(c.id);
+  const total  = getClientTotal(c.id);
+
+  document.getElementById('detailCard').innerHTML = `
+    <div class="dc-header">
+      <div class="dc-avatar" style="background:${color}">${getInitials(c.nome)}</div>
+      <div class="dc-name">${c.nome}${c.vip?' ⭐':''}</div>
+      <div style="margin-top:6px"><span class="cc-type ${tc.cls}">${tc.icon} ${tc.label}</span></div>
+    </div>
+    <div class="dc-section">
+      <div class="dc-section-title">Contato</div>
+      ${c.whats?`<div class="dc-row"><span class="dc-label">WhatsApp</span><span class="dc-value">${c.whats}</span></div>`:''}
+      ${c.email?`<div class="dc-row"><span class="dc-label">Email</span><span class="dc-value">${c.email}</span></div>`:''}
+      ${c.insta?`<div class="dc-row"><span class="dc-label">Instagram</span><span class="dc-value">${c.insta}</span></div>`:''}
+      ${c.outro?`<div class="dc-row"><span class="dc-label">Outro</span><span class="dc-value">${c.outro}</span></div>`:''}
+    </div>
+    <div class="dc-section">
+      <div class="dc-section-title">Localização</div>
+      ${c.cidade?`<div class="dc-row"><span class="dc-label">Cidade</span><span class="dc-value">${c.cidade}</span></div>`:''}
+      ${c.pais?`<div class="dc-row"><span class="dc-label">País</span><span class="dc-value">${c.pais}</span></div>`:''}
+      ${c.cep?`<div class="dc-row"><span class="dc-label">CEP/ZIP</span><span class="dc-value">${c.cep}</span></div>`:''}
+      ${c.endereco?`<div class="dc-row"><span class="dc-label">Endereço</span><span class="dc-value" style="font-size:11px">${c.endereco}</span></div>`:''}
+    </div>
+    <div class="dc-section">
+      <div class="dc-section-title">Resumo Financeiro</div>
+      <div class="dc-row"><span class="dc-label">Pedidos</span><span class="dc-value">${orders_.length}</span></div>
+      <div class="dc-row"><span class="dc-label">Total gasto</span><span class="dc-value" style="color:var(--gold)">${fmtMoney(total)}</span></div>
+      ${orders_.length>0?`<div class="dc-row"><span class="dc-label">Ticket médio</span><span class="dc-value">${fmtMoney(total/orders_.length)}</span></div>`:''}
+    </div>
+    ${c.prefs&&c.prefs.length?`<div class="dc-section">
+      <div class="dc-section-title">Preferências</div>
+      <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:4px">${c.prefs.map(p=>`<span style="padding:3px 8px;background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.2);border-radius:2px;font-size:10px;color:var(--gold)">${p}</span>`).join('')}</div>
+    </div>`:''}
+    ${c.notas?`<div class="dc-section">
+      <div class="dc-section-title">Notas Internas</div>
+      <div style="font-size:12px;color:var(--silver);line-height:1.6;margin-top:4px;font-style:italic">${c.notas}</div>
+    </div>`:''}
+    ${c.bday?`<div class="dc-section"><div class="dc-row"><span class="dc-label">🎂 Aniversário</span><span class="dc-value">${fmtDate(c.bday)}</span></div></div>`:''}
+    <div style="padding:14px 20px;display:flex;gap:8px">
+      <button class="btn-p" style="flex:1;justify-content:center" onclick="openClientModal(${c.id})">
+        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        Editar
+      </button>
+    </div>`;
+
+  // History
+  const hist = document.getElementById('historyList');
+  if (orders_.length === 0) {
+    hist.innerHTML = '<div style="padding:32px;text-align:center;color:var(--smoke);font-size:13px;background:var(--charcoal);border:1px solid var(--border);border-radius:4px;">Nenhum pedido registrado para este cliente ainda.</div>';
+    return;
+  }
+  hist.innerHTML = '<div class="history-list">' + orders_.map((o,i) => {
+    const sym = o.moeda==='USD'?'$':'R$';
+    return `<div class="history-item" style="animation-delay:${i*.04}s">
+      <div>
+        <div class="hi-prod">${(o.items||[]).map(it=>it.nome||it.codigo).filter(Boolean).join(', ')||o.numero}</div>
+        <div class="hi-meta">${o.canal||''} · ${o.tipo||''} · ${o.numero}</div>
+      </div>
+      <div>
+        <div class="hi-val">${sym} ${(o.total||0).toLocaleString('pt-BR',{minimumFractionDigits:2})}</div>
+        <div class="hi-date">${fmtDate(o.dataPedido)}</div>
+      </div>
+    </div>`;
+  }).join('') + '</div>';
+}
+
+// ── Open modal ──
+function openClientModal(id=null) {
+  editingId = id;
+  // Reset
+  ['cNome','cEmpresa','cWhats','cEmail','cInsta','cOutro','cCidade','cCep','cEndereco','cNotas'].forEach(i=>{const el=document.getElementById(i);if(el)el.value='';});
+  document.getElementById('cTipo').value='colecionador';
+  document.getElementById('cPais').value='EUA';
+  document.getElementById('cVip').checked=false;
+  document.getElementById('cBday').value='';
+  document.getElementById('cOrigem').value='';
+  document.querySelectorAll('.ptag').forEach(t=>t.classList.remove('sel'));
+
+  if(id){
+    const c=clients.find(x=>x.id===id);
+    if(c){
+      document.getElementById('mTitle').textContent='Editar Cliente';
+      document.getElementById('mSub').textContent=c.nome;
+      document.getElementById('cNome').value=c.nome||'';
+      document.getElementById('cEmpresa').value=c.empresa||'';
+      document.getElementById('cTipo').value=c.tipo||'colecionador';
+      document.getElementById('cPais').value=c.pais||'EUA';
+      document.getElementById('cVip').checked=!!c.vip;
+      document.getElementById('cBday').value=c.bday||'';
+      document.getElementById('cOrigem').value=c.origem||'';
+      document.getElementById('cWhats').value=c.whats||'';
+      document.getElementById('cEmail').value=c.email||'';
+      document.getElementById('cInsta').value=c.insta||'';
+      document.getElementById('cOutro').value=c.outro||'';
+      document.getElementById('cCidade').value=c.cidade||'';
+      document.getElementById('cCep').value=c.cep||'';
+      document.getElementById('cEndereco').value=c.endereco||'';
+      document.getElementById('cNotas').value=c.notas||'';
+      (c.prefs||[]).forEach(p=>document.querySelectorAll('.ptag').forEach(t=>{if(t.textContent.trim()===p)t.classList.add('sel');}));
+    }
+  } else {
+    document.getElementById('mTitle').textContent='Novo Cliente';
+    document.getElementById('mSub').textContent='Preencha os dados do cliente';
+  }
+  openModal('clientOverlay');
+}
+
+function saveClient(){
+  const nome=document.getElementById('cNome').value.trim();
+  if(!nome){showToast('Preencha o nome do cliente!',true);return;}
+  const prefs=[...document.querySelectorAll('.ptag.sel')].map(t=>t.textContent.trim());
+  const client={
+    id:editingId||Date.now(),
+    nome,
+    empresa:document.getElementById('cEmpresa').value.trim(),
+    tipo:document.getElementById('cTipo').value,
+    pais:document.getElementById('cPais').value,
+    vip:document.getElementById('cVip').checked,
+    bday:document.getElementById('cBday').value,
+    origem:document.getElementById('cOrigem').value,
+    whats:document.getElementById('cWhats').value.trim(),
+    email:document.getElementById('cEmail').value.trim(),
+    insta:document.getElementById('cInsta').value.trim(),
+    outro:document.getElementById('cOutro').value.trim(),
+    cidade:document.getElementById('cCidade').value.trim(),
+    cep:document.getElementById('cCep').value.trim(),
+    endereco:document.getElementById('cEndereco').value.trim(),
+    notas:document.getElementById('cNotas').value.trim(),
+    prefs,
+    criadoEm:editingId?clients.find(x=>x.id===editingId)?.criadoEm:new Date().toISOString()
+  };
+  if(editingId){const idx=clients.findIndex(x=>x.id===editingId);if(idx>=0)clients[idx]=client;}
+  else clients.unshift(client);
+  save();closeModal('clientOverlay');renderAll();
+  showToast(editingId?'Cliente atualizado!':'Cliente cadastrado com sucesso!');
+  saveToCloud(client);
+}
+
+function deleteClient(id){
+  if(!confirm('Excluir este cliente?'))return;
+  const c = clients.find(x=>x.id===id);
+  if (c?._cloudId) deleteFromCloud(c._cloudId);
+  clients=clients.filter(c=>c.id!==id);
+  save();renderAll();showToast('Cliente removido.');
+}
+
+function updateStats(){
+  const total=clients.length;
+  const vips=clients.filter(c=>c.vip).length;
+  const receita=clients.reduce((s,c)=>s+getClientTotal(c.id),0);
+  const ticket=total>0?receita/total:0;
+  const now=new Date();
+  const bdays=clients.filter(c=>c.bday&&parseInt(c.bday.split('-')[1])===now.getMonth()+1).length;
+  document.getElementById('stTotal').innerHTML=`${total} <span>clientes</span>`;
+  document.getElementById('stVip').innerHTML=`${vips} <span>VIPs</span>`;
+  document.getElementById('stReceita').textContent=fmtMoney(receita);
+  document.getElementById('stTicket').textContent=fmtMoney(ticket);
+  document.getElementById('stBday').innerHTML=`${bdays} <span>clientes</span>`;
+}
+
+function updateClientSelect(){
+  const sel=document.getElementById('clientSelect');
+  const current=sel.value;
+  sel.innerHTML='<option value="">Selecione um cliente...</option>'+
+    clients.map(c=>`<option value="${c.id}">${c.nome}${c.empresa?' — '+c.empresa:''} ${c.vip?'⭐':''}</option>`).join('');
+  if(current)sel.value=current;
+}
+
+function renderAll(){renderClients();updateStats();checkBirthdays();updateClientSelect();}
+
+function switchTab(tab){
+  document.getElementById('tabCards').style.display=tab==='cards'?'block':'none';
+  document.getElementById('tabDetalhe').style.display=tab==='detalhe'?'block':'none';
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',(i===0&&tab==='cards')||(i===1&&tab==='detalhe')));
+}
+
+function openModal(id){document.getElementById(id).classList.add('open');document.body.style.overflow='hidden';}
+function closeModal(id){document.getElementById(id).classList.remove('open');document.body.style.overflow='';}
+function handleOv(e,id){if(e.target===document.getElementById(id))closeModal(id);}
+function showToast(msg,err=false){
+  document.getElementById('toastMsg').textContent=msg;
+  const t=document.getElementById('toast');
+  t.style.borderColor=err?'#c44a1a':'#c9a84c';
+  t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3200);
+}
+
+renderAll();
+</script>
+</body>
+</html>

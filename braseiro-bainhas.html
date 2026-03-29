@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Braseiro Premium Knives — Bainhas</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{
+  --black:#0a0a0a;--charcoal:#141414;--steel:#1e1e1e;--iron:#2a2a2a;
+  --smoke:#3a3a3a;--ash:#6b6b6b;--silver:#a8a8a8;--light:#e8e4de;
+  --cream:#f5f1eb;--gold:#c9a84c;--gold-light:#e8c96b;--ember:#c44a1a;
+  --green:#4caf7a;--blue:#5b9cf6;--border:rgba(201,168,76,.2);--border-h:rgba(201,168,76,.5);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--black);color:var(--light);font-family:'Rajdhani',sans-serif;min-height:100vh}
+body::before{content:'';position:fixed;inset:0;background:
+  radial-gradient(ellipse 70% 50% at 10% 90%,rgba(196,74,26,.06) 0%,transparent 60%),
+  radial-gradient(ellipse 60% 40% at 90% 10%,rgba(201,168,76,.05) 0%,transparent 50%);
+  pointer-events:none;z-index:0}
+
+header{position:sticky;top:0;z-index:100;background:rgba(10,10,10,.96);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);padding:0 40px;display:flex;align-items:center;
+  justify-content:space-between;height:70px}
+.logo{display:flex;align-items:center;gap:14px}
+.logo svg{width:36px;height:36px}
+.logo-text span:first-child{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;letter-spacing:.05em;color:var(--gold);display:block}
+.logo-text span:last-child{font-size:9px;letter-spacing:.25em;color:var(--ash);text-transform:uppercase;display:block;margin-top:2px}
+.nav{display:flex;gap:6px}
+.nb{padding:7px 16px;background:transparent;border:1px solid transparent;color:var(--ash);
+  font-family:'Rajdhani',sans-serif;font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+  cursor:pointer;border-radius:2px;transition:all .2s}
+.nb.active{border-color:var(--border);color:var(--gold);background:rgba(201,168,76,.06)}
+.nb:hover:not(.active){color:var(--silver);border-color:rgba(255,255,255,.08)}
+
+main{position:relative;z-index:1;max-width:1400px;margin:0 auto;padding:40px 40px 80px}
+
+.ph{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:32px;padding-bottom:22px;border-bottom:1px solid var(--border)}
+.ph h1{font-family:'Cormorant Garamond',serif;font-size:42px;font-weight:300;color:var(--cream);line-height:1}
+.ph h1 em{font-style:italic;color:var(--gold)}
+.ph p{margin-top:8px;font-size:13px;color:var(--ash);letter-spacing:.1em;text-transform:uppercase}
+
+/* Stats */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:4px;margin-bottom:28px;overflow:hidden}
+.stat{background:var(--charcoal);padding:15px 20px}
+.stat-l{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--ash)}
+.stat-v{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:600;color:var(--cream);line-height:1;margin-top:2px}
+.stat-v span{font-size:12px;color:var(--ash);font-family:'Rajdhani',sans-serif}
+.stat-v.gold{color:var(--gold)}.stat-v.green{color:var(--green)}.stat-v.ember{color:var(--ember)}
+
+/* Info box */
+.info-bar{background:rgba(201,168,76,.05);border:1px solid rgba(201,168,76,.15);border-radius:4px;
+  padding:14px 20px;margin-bottom:24px;display:flex;gap:12px;align-items:flex-start;font-size:13px;color:var(--silver);line-height:1.6}
+.info-bar strong{color:var(--gold)}
+
+/* Grid */
+.bainhas-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+
+/* Bainha card */
+.bainha-card{background:var(--charcoal);border:1px solid var(--border);border-radius:4px;overflow:hidden;transition:all .25s;animation:ci .35s ease both}
+@keyframes ci{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.bainha-card:hover{border-color:var(--border-h);transform:translateY(-2px);box-shadow:0 12px 32px rgba(0,0,0,.4)}
+
+.bc-img{width:100%;height:160px;background:var(--steel);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.bc-img img{width:100%;height:100%;object-fit:cover}
+.bc-ph{display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--smoke);opacity:.5}
+.bc-ph span{font-size:10px;letter-spacing:.08em}
+
+/* Status badge */
+.bc-status{position:absolute;top:10px;right:10px;padding:3px 9px;border-radius:2px;font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+.s-disponivel{background:rgba(76,175,122,.8);color:#fff}
+.s-em-uso{background:rgba(245,158,11,.8);color:#fff}
+.s-sem-estoque{background:rgba(196,74,26,.8);color:#fff}
+
+.bc-body{padding:14px 16px}
+.bc-code{font-size:10px;letter-spacing:.2em;color:var(--ash);text-transform:uppercase;margin-bottom:4px}
+.bc-name{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--cream);margin-bottom:4px}
+.bc-type{display:inline-flex;align-items:center;padding:2px 8px;background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.2);border-radius:2px;font-size:10px;color:var(--gold);margin-bottom:10px}
+
+.bc-specs{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px}
+.bs-item{background:var(--steel);border-radius:3px;padding:7px 10px}
+.bs-l{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--ash)}
+.bs-v{font-size:12px;font-weight:600;color:var(--silver);margin-top:1px}
+
+/* Linked knives */
+.linked-knives{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px}
+.knife-tag{padding:3px 8px;background:rgba(91,156,246,.08);border:1px solid rgba(91,156,246,.2);border-radius:2px;font-size:10px;color:var(--blue)}
+
+.bc-footer{display:flex;justify-content:space-between;align-items:center;padding-top:10px;border-top:1px solid rgba(255,255,255,.05)}
+.bc-qty{display:flex;flex-direction:column;gap:1px}
+.bc-qty-l{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--ash)}
+.bc-qty-v{font-size:16px;font-weight:700;color:var(--green)}
+.bc-qty-v.low{color:var(--ember)}
+.bc-acts{display:flex;gap:5px}
+.ib{width:28px;height:28px;background:var(--steel);border:1px solid rgba(255,255,255,.06);border-radius:2px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--ash);transition:all .2s}
+.ib:hover{background:var(--iron);color:var(--gold);border-color:var(--border)}
+.ib.danger:hover{color:var(--ember)}
+
+/* Buttons */
+.btn-p{display:flex;align-items:center;gap:8px;padding:11px 22px;background:var(--gold);color:var(--black);border:none;font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;border-radius:2px;transition:all .25s}
+.btn-p:hover{background:var(--gold-light);box-shadow:0 6px 20px rgba(201,168,76,.25)}
+.btn-s{display:flex;align-items:center;gap:8px;padding:9px 18px;background:transparent;color:var(--silver);border:1px solid var(--border);font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;border-radius:2px;transition:all .2s}
+.btn-s:hover{border-color:var(--border-h);color:var(--gold)}
+
+/* Modal */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(8px);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .3s}
+.overlay.open{opacity:1;pointer-events:all}
+.modal{background:var(--charcoal);border:1px solid var(--border);border-radius:6px;width:100%;max-width:680px;max-height:92vh;overflow-y:auto;transform:translateY(24px);transition:transform .3s}
+.overlay.open .modal{transform:translateY(0)}
+.mh{padding:22px 28px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:flex-start;position:sticky;top:0;background:var(--charcoal);z-index:2}
+.mh h2{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:400;color:var(--cream)}
+.mh p{font-size:11px;color:var(--ash);letter-spacing:.1em;text-transform:uppercase;margin-top:3px}
+.xbtn{width:32px;height:32px;background:var(--steel);border:1px solid var(--border);border-radius:2px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--ash);transition:all .2s;flex-shrink:0}
+.xbtn:hover{color:var(--cream);border-color:var(--border-h)}
+.mb{padding:22px 28px}
+.mf{padding:14px 28px 22px;display:flex;justify-content:flex-end;gap:10px;border-top:1px solid var(--border)}
+
+/* Form */
+.fsec{margin-bottom:22px}
+.fsec-title{display:flex;align-items:center;gap:10px;margin-bottom:13px}
+.fsec-title h3{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);font-weight:600}
+.fsec-title::after{content:'';flex:1;height:1px;background:var(--border)}
+.fg{display:grid;gap:12px;margin-bottom:12px}
+.fg.c2{grid-template-columns:1fr 1fr}
+.fg.c3{grid-template-columns:1fr 1fr 1fr}
+.ff{display:flex;flex-direction:column;gap:5px}
+label{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--ash);font-weight:600}
+input,select,textarea{background:var(--steel);border:1px solid rgba(255,255,255,.08);border-radius:3px;padding:9px 13px;color:var(--light);font-family:'Rajdhani',sans-serif;font-size:14px;transition:all .2s;outline:none;width:100%}
+input:focus,select:focus,textarea:focus{border-color:rgba(201,168,76,.4);background:var(--iron);box-shadow:0 0 0 3px rgba(201,168,76,.06)}
+select option{background:var(--steel)}
+textarea{min-height:65px;resize:vertical}
+
+/* Photo upload */
+.photo-up{border:2px dashed rgba(255,255,255,.08);border-radius:4px;padding:24px;display:flex;flex-direction:column;align-items:center;gap:10px;cursor:pointer;transition:all .2s;text-align:center;background:var(--steel);position:relative}
+.photo-up:hover{border-color:rgba(201,168,76,.3);background:var(--iron)}
+.photo-up input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+#photoPreview{width:100%;max-height:160px;object-fit:cover;border-radius:3px;display:none}
+
+/* Knife selector */
+.knife-selector{display:flex;flex-direction:column;gap:6px;max-height:160px;overflow-y:auto}
+.knife-opt{display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--steel);border:1px solid rgba(255,255,255,.06);border-radius:3px;cursor:pointer;transition:all .2s}
+.knife-opt:hover{border-color:var(--border)}
+.knife-opt.sel{background:rgba(201,168,76,.08);border-color:rgba(201,168,76,.3)}
+.knife-opt input[type=checkbox]{width:auto;accent-color:var(--gold)}
+.knife-opt-name{font-size:12px;color:var(--silver)}
+.knife-opt.sel .knife-opt-name{color:var(--gold)}
+
+/* Empty */
+.empty{display:flex;flex-direction:column;align-items:center;padding:60px;text-align:center;color:var(--ash)}
+.empty svg{margin-bottom:16px;opacity:.25}
+.empty h3{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--silver);margin-bottom:6px;font-weight:300}
+.empty p{font-size:13px;max-width:320px;line-height:1.6;margin-bottom:20px}
+
+.toast{position:fixed;bottom:32px;right:32px;background:var(--charcoal);border:1px solid var(--gold);border-radius:4px;padding:13px 18px;display:flex;align-items:center;gap:10px;font-size:13px;color:var(--cream);transform:translateY(20px);opacity:0;transition:all .3s;z-index:300;pointer-events:none}
+.toast.show{transform:translateY(0);opacity:1}
+
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:var(--charcoal)}
+::-webkit-scrollbar-thumb{background:var(--smoke);border-radius:3px}
+
+@media(max-width:900px){
+  header{padding:0 20px}main{padding:24px 20px 60px}
+  .stats{grid-template-columns:1fr 1fr}
+  .nav{display:none}
+  .fg.c2,.fg.c3{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <svg viewBox="0 0 40 40" fill="none"><path d="M8 32 L28 8 L34 14 L16 36 Z" fill="none" stroke="#c9a84c" stroke-width="1.5"/><path d="M28 8 L34 14 L32 16 L26 10 Z" fill="#c9a84c" opacity="0.6"/><path d="M8 32 L12 34 L16 36 L14 32 Z" fill="#c44a1a" opacity="0.8"/><circle cx="31" cy="11" r="2" fill="#c9a84c" opacity="0.4"/></svg>
+    <div class="logo-text"><span>Braseiro Premium Knives</span><span>Sistema de Gestão</span></div>
+  </div>
+  <nav class="nav">
+    <button class="nb" onclick="location.href='braseiro-index.html'" style="color:var(--gold);border-color:var(--border)">← Início</button>
+    <button class="nb" onclick="location.href='braseiro-cadastro-v2.html'">Produtos</button>
+    <button class="nb active">Bainhas</button>
+    <button class="nb" onclick="location.href='braseiro-estoque.html'">Estoque</button>
+  </nav>
+</header>
+
+<main>
+  <div class="ph">
+    <div>
+      <h1>Cadastro de <em>Bainhas</em></h1>
+      <p>Código único · foto · tipo · facas compatíveis</p>
+    </div>
+    <button class="btn-p" onclick="openModal()">
+      <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Nova Bainha
+    </button>
+  </div>
+
+  <!-- Info -->
+  <div class="info-bar">
+    <span style="font-size:18px;flex-shrink:0">💡</span>
+    <div>Cada bainha tem um <strong>código único</strong> e uma <strong>foto</strong> para você nunca mais colocar a bainha errada numa faca. Vincule cada bainha às facas compatíveis — assim você sabe exatamente qual bainha vai com qual faca.
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats">
+    <div class="stat"><div class="stat-l">Total de Bainhas</div><div class="stat-v" id="stTotal">0 <span>tipos</span></div></div>
+    <div class="stat"><div class="stat-l">Disponíveis</div><div class="stat-v green" id="stDisp">0 <span>un.</span></div></div>
+    <div class="stat"><div class="stat-l">Em Uso</div><div class="stat-v gold" id="stUso">0 <span>un.</span></div></div>
+    <div class="stat"><div class="stat-l">Sem Estoque</div><div class="stat-v ember" id="stSem">0 <span>tipos</span></div></div>
+  </div>
+
+  <!-- Grid -->
+  <div class="bainhas-grid" id="bainhásGrid"></div>
+  <div class="empty" id="emptyState">
+    <svg width="52" height="52" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+    <h3>Nenhuma bainha cadastrada</h3>
+    <p>Cadastre suas bainhas com código único e foto para nunca mais errar qual vai com qual faca.</p>
+    <button class="btn-p" onclick="openModal()">
+      <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Cadastrar Primeira Bainha
+    </button>
+  </div>
+</main>
+
+<!-- ══ MODAL ══ -->
+<div class="overlay" id="mainOverlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="mh">
+      <div><h2 id="modalTitle">Nova Bainha</h2><p id="modalSub">Preencha os dados da bainha</p></div>
+      <button class="xbtn" onclick="closeModal()">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="mb">
+
+      <!-- Foto -->
+      <div class="fsec">
+        <div class="fsec-title"><h3>Foto da Bainha</h3></div>
+        <div class="photo-up" id="photoUpArea">
+          <input type="file" accept="image/*" onchange="handlePhoto(event)">
+          <img id="photoPreview" alt="preview">
+          <div id="photoPlaceholder">
+            <svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21,15 16,10 5,21"/></svg>
+            <span style="font-size:13px;color:var(--silver)">Clique para adicionar foto</span>
+            <span style="font-size:11px;color:var(--ash)">Foto clara com fundo neutro</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Identificação -->
+      <div class="fsec">
+        <div class="fsec-title"><h3>Identificação</h3></div>
+        <div class="fg c3">
+          <div class="ff">
+            <label>Código da Bainha *</label>
+            <input type="text" id="bCodigo" placeholder="Ex: BSH-001" oninput="this.value=this.value.toUpperCase()">
+          </div>
+          <div class="ff">
+            <label>Nome / Descrição *</label>
+            <input type="text" id="bNome" placeholder="Ex: Couro Marrom Simples">
+          </div>
+          <div class="ff">
+            <label>Tipo de Material</label>
+            <select id="bTipo">
+              <option value="couro-curtido">Couro Curtido</option>
+              <option value="couro-sintetico">Couro Sintético</option>
+              <option value="kydex">Kydex (Plástico Rígido)</option>
+              <option value="personalizada">Personalizada sob Medida</option>
+              <option value="outro">Outro</option>
+            </select>
+          </div>
+        </div>
+        <div class="fg c3">
+          <div class="ff">
+            <label>Cor</label>
+            <input type="text" id="bCor" placeholder="Ex: Marrom escuro">
+          </div>
+          <div class="ff">
+            <label>Quantidade em Estoque</label>
+            <input type="number" id="bQtd" value="1" min="0">
+          </div>
+          <div class="ff">
+            <label>Status</label>
+            <select id="bStatus">
+              <option value="disponivel">✅ Disponível</option>
+              <option value="em-uso">⚠️ Em Uso</option>
+              <option value="sem-estoque">❌ Sem Estoque</option>
+            </select>
+          </div>
+        </div>
+        <div class="fg c2">
+          <div class="ff">
+            <label>Comprimento (cm)</label>
+            <input type="text" id="bComp" placeholder="Ex: 25cm">
+          </div>
+          <div class="ff">
+            <label>Custo (R$)</label>
+            <input type="number" id="bCusto" placeholder="0.00" step="0.01" min="0">
+          </div>
+        </div>
+      </div>
+
+      <!-- Facas compatíveis -->
+      <div class="fsec">
+        <div class="fsec-title"><h3>Facas Compatíveis</h3></div>
+        <div style="font-size:12px;color:var(--ash);margin-bottom:10px">Selecione quais facas usam esta bainha — assim você nunca mais erra</div>
+        <div class="knife-selector" id="knifeSelectorList">
+          <div style="padding:16px;text-align:center;color:var(--smoke);font-size:12px">Nenhum produto cadastrado ainda</div>
+        </div>
+      </div>
+
+      <!-- Observações -->
+      <div class="fsec">
+        <div class="fsec-title"><h3>Observações</h3></div>
+        <div class="ff">
+          <textarea id="bObs" placeholder="Detalhes, notas, fornecedor, características especiais..."></textarea>
+        </div>
+      </div>
+
+    </div>
+    <div class="mf">
+      <button class="btn-s" onclick="closeModal()">Cancelar</button>
+      <button class="btn-p" onclick="saveBainha()">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+        Salvar Bainha
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">
+  <svg width="14" height="14" fill="none" stroke="#c9a84c" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+  <span id="toastMsg"></span>
+</div>
+
+<script>
+const SUPA_URL = 'https://mibylztsvhhhmnsoipac.supabase.co';
+const SUPA_KEY = 'sb_publishable_a7X5JlFdtqwzaE9bB5TsGg_09zvlle-';
+const supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+let bainhas = JSON.parse(localStorage.getItem('braseiro_bainhas') || '[]');
+let editingId = null;
+let photoData = null;
+let selectedKnives = [];
+
+function save() { localStorage.setItem('braseiro_bainhas', JSON.stringify(bainhas)); }
+
+const TYPE_LABELS = {
+  'couro-curtido':'Couro Curtido','couro-sintetico':'Couro Sintético',
+  'kydex':'Kydex','personalizada':'Personalizada','outro':'Outro'
+};
+
+function getProducts() {
+  const models = JSON.parse(localStorage.getItem('braseiro_models_v2') || '[]');
+  const prods = [];
+  models.forEach(m => {
+    prods.push({ codigo: m.codigo, nome: m.nome });
+    (m.variacoes||[]).forEach(v => prods.push({ codigo: v.codigo, nome: v.desc||m.nome }));
+  });
+  return prods;
+}
+
+function openModal(id=null) {
+  editingId = id;
+  photoData = null;
+  selectedKnives = [];
+
+  ['bCodigo','bNome','bCor','bComp','bObs','bCusto'].forEach(i=>{const el=document.getElementById(i);if(el)el.value='';});
+  document.getElementById('bTipo').value = 'couro-curtido';
+  document.getElementById('bStatus').value = 'disponivel';
+  document.getElementById('bQtd').value = '1';
+  document.getElementById('photoPreview').style.display = 'none';
+  document.getElementById('photoPlaceholder').style.display = 'flex';
+
+  // Load knives
+  const products = getProducts();
+  const kList = document.getElementById('knifeSelectorList');
+  if (products.length === 0) {
+    kList.innerHTML = '<div style="padding:16px;text-align:center;color:var(--smoke);font-size:12px">Cadastre produtos primeiro no Módulo Produtos</div>';
+  } else {
+    kList.innerHTML = products.map(p => `
+      <div class="knife-opt" onclick="toggleKnife(this,'${p.codigo}')">
+        <input type="checkbox" onclick="event.stopPropagation()">
+        <div class="knife-opt-name"><strong>${p.codigo}</strong> — ${p.nome}</div>
+      </div>`).join('');
+  }
+
+  if (id) {
+    const b = bainhas.find(x=>x.id===id);
+    if (b) {
+      document.getElementById('modalTitle').textContent = 'Editar Bainha';
+      document.getElementById('bCodigo').value = b.codigo||'';
+      document.getElementById('bNome').value = b.nome||'';
+      document.getElementById('bTipo').value = b.tipo||'couro-curtido';
+      document.getElementById('bCor').value = b.cor||'';
+      document.getElementById('bQtd').value = b.qtd||1;
+      document.getElementById('bStatus').value = b.status||'disponivel';
+      document.getElementById('bComp').value = b.comp||'';
+      document.getElementById('bCusto').value = b.custo||'';
+      document.getElementById('bObs').value = b.obs||'';
+      if (b.foto) { photoData=b.foto; document.getElementById('photoPreview').src=b.foto; document.getElementById('photoPreview').style.display='block'; document.getElementById('photoPlaceholder').style.display='none'; }
+      selectedKnives = b.knives||[];
+      // Check linked knives
+      document.querySelectorAll('.knife-opt').forEach(opt => {
+        const code = opt.querySelector('input').getAttribute('data-code') || opt.querySelector('.knife-opt-name strong')?.textContent;
+        if (selectedKnives.includes(code)) { opt.classList.add('sel'); opt.querySelector('input').checked=true; }
+      });
+    }
+  } else {
+    document.getElementById('modalTitle').textContent = 'Nova Bainha';
+    document.getElementById('modalSub').textContent = 'Preencha os dados da bainha';
+    // Auto-generate code
+    const nextNum = String(bainhas.length + 1).padStart(3,'0');
+    document.getElementById('bCodigo').value = `BSH-${nextNum}`;
+  }
+
+  document.getElementById('mainOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function toggleKnife(el, codigo) {
+  el.classList.toggle('sel');
+  const cb = el.querySelector('input');
+  cb.checked = el.classList.contains('sel');
+  if (el.classList.contains('sel')) { if (!selectedKnives.includes(codigo)) selectedKnives.push(codigo); }
+  else { selectedKnives = selectedKnives.filter(k=>k!==codigo); }
+}
+
+function handlePhoto(e) {
+  const file = e.target.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    photoData = ev.target.result;
+    document.getElementById('photoPreview').src = photoData;
+    document.getElementById('photoPreview').style.display = 'block';
+    document.getElementById('photoPlaceholder').style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+}
+
+function saveBainha() {
+  const codigo = document.getElementById('bCodigo').value.trim().toUpperCase();
+  const nome   = document.getElementById('bNome').value.trim();
+  if (!codigo || !nome) { showToast('Preencha o Código e o Nome!', true); return; }
+
+  const bainha = {
+    id: editingId || Date.now(),
+    codigo, nome,
+    tipo:   document.getElementById('bTipo').value,
+    cor:    document.getElementById('bCor').value.trim(),
+    qtd:    parseInt(document.getElementById('bQtd').value)||0,
+    status: document.getElementById('bStatus').value,
+    comp:   document.getElementById('bComp').value.trim(),
+    custo:  parseFloat(document.getElementById('bCusto').value)||0,
+    obs:    document.getElementById('bObs').value.trim(),
+    knives: [...selectedKnives],
+    foto:   photoData,
+    criadoEm: editingId ? bainhas.find(x=>x.id===editingId)?.criadoEm : new Date().toISOString()
+  };
+
+  if (editingId) { const idx=bainhas.findIndex(x=>x.id===editingId); if(idx>=0) bainhas[idx]=bainha; }
+  else bainhas.unshift(bainha);
+
+  save(); closeModal(); render(); updateStats();
+  showToast(`Bainha ${codigo} salva!`);
+}
+
+function deleteBainha(id) {
+  if (!confirm('Excluir esta bainha?')) return;
+  bainhas = bainhas.filter(b=>b.id!==id);
+  save(); render(); updateStats(); showToast('Bainha excluída.');
+}
+
+function render() {
+  const grid  = document.getElementById('bainhásGrid');
+  const empty = document.getElementById('emptyState');
+  if (bainhas.length===0) { grid.innerHTML=''; empty.style.display='flex'; return; }
+  empty.style.display='none';
+
+  grid.innerHTML = bainhas.map((b,i) => {
+    const statusCls = b.status==='disponivel'?'s-disponivel':b.status==='em-uso'?'s-em-uso':'s-sem-estoque';
+    const statusLabel = b.status==='disponivel'?'Disponível':b.status==='em-uso'?'Em Uso':'Sem Estoque';
+    const img = b.foto
+      ? `<img src="${b.foto}" alt="${b.nome}">`
+      : `<div class="bc-ph"><svg width="36" height="36" fill="none" stroke="currentColor" stroke-width="0.8" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21,15 16,10 5,21"/></svg><span>Sem foto</span></div>`;
+
+    const knivesHtml = (b.knives||[]).length > 0
+      ? `<div class="linked-knives">${b.knives.map(k=>`<span class="knife-tag">🔪 ${k}</span>`).join('')}</div>`
+      : `<div style="font-size:11px;color:var(--smoke);margin-bottom:10px">Nenhuma faca vinculada</div>`;
+
+    return `
+    <div class="bainha-card" style="animation-delay:${i*.04}s">
+      <div class="bc-img">
+        ${img}
+        <span class="bc-status ${statusCls}">${statusLabel}</span>
+      </div>
+      <div class="bc-body">
+        <div class="bc-code">${b.codigo}</div>
+        <div class="bc-name">${b.nome}</div>
+        <div class="bc-type">${TYPE_LABELS[b.tipo]||b.tipo}</div>
+        <div class="bc-specs">
+          ${b.cor?`<div class="bs-item"><div class="bs-l">Cor</div><div class="bs-v">${b.cor}</div></div>`:''}
+          ${b.comp?`<div class="bs-item"><div class="bs-l">Comprimento</div><div class="bs-v">${b.comp}</div></div>`:''}
+        </div>
+        ${knivesHtml}
+        <div class="bc-footer">
+          <div class="bc-qty">
+            <span class="bc-qty-l">Em estoque</span>
+            <span class="bc-qty-v ${b.qtd===0?'low':''}">${b.qtd} un.</span>
+          </div>
+          <div class="bc-acts">
+            <button class="ib" onclick="openModal(${b.id})" title="Editar">
+              <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            </button>
+            <button class="ib danger" onclick="deleteBainha(${b.id})" title="Excluir">
+              <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function updateStats() {
+  const total = bainhas.length;
+  const disp  = bainhas.reduce((s,b)=>s+(b.qtd||0),0);
+  const uso   = bainhas.filter(b=>b.status==='em-uso').length;
+  const sem   = bainhas.filter(b=>b.qtd===0).length;
+  document.getElementById('stTotal').innerHTML = `${total} <span>tipos</span>`;
+  document.getElementById('stDisp').innerHTML  = `${disp} <span>un.</span>`;
+  document.getElementById('stUso').innerHTML   = `${uso} <span>un.</span>`;
+  document.getElementById('stSem').innerHTML   = `${sem} <span>tipos</span>`;
+}
+
+function closeModal() { document.getElementById('mainOverlay').classList.remove('open'); document.body.style.overflow=''; }
+
+function showToast(msg, err=false) {
+  document.getElementById('toastMsg').textContent = msg;
+  const t = document.getElementById('toast');
+  t.style.borderColor = err?'#c44a1a':'#c9a84c';
+  t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3200);
+}
+
+render(); updateStats();
+</script>
+</body>
+</html>

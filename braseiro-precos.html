@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Braseiro Premium Knives — Formação de Preço</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0a0a0a;
+    --charcoal: #141414;
+    --steel: #1e1e1e;
+    --iron: #2a2a2a;
+    --smoke: #3a3a3a;
+    --ash: #6b6b6b;
+    --silver: #a8a8a8;
+    --light: #e8e4de;
+    --cream: #f5f1eb;
+    --gold: #c9a84c;
+    --gold-light: #e8c96b;
+    --ember: #c44a1a;
+    --green: #4caf7a;
+    --green-dim: rgba(76,175,122,0.12);
+    --red-dim: rgba(196,74,26,0.12);
+    --border: rgba(201,168,76,0.2);
+    --border-hover: rgba(201,168,76,0.45);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--black);
+    color: var(--light);
+    font-family: 'Rajdhani', sans-serif;
+    min-height: 100vh;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 70% 50% at 10% 90%, rgba(196,74,26,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 40% at 90% 10%, rgba(201,168,76,0.06) 0%, transparent 50%),
+      repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.004) 2px, rgba(255,255,255,0.004) 3px);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── Header ── */
+  header {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(10,10,10,0.96);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 40px;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 70px;
+  }
+
+  .logo { display: flex; align-items: center; gap: 14px; }
+  .logo-icon { width: 36px; height: 36px; }
+  .logo-icon svg { width: 100%; height: 100%; }
+  .logo-text { display: flex; flex-direction: column; line-height: 1; }
+  .logo-text span:first-child { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 600; letter-spacing: 0.05em; color: var(--gold); }
+  .logo-text span:last-child { font-size: 9px; letter-spacing: 0.25em; color: var(--ash); text-transform: uppercase; margin-top: 2px; }
+
+  .header-nav { display: flex; gap: 6px; }
+  .nav-btn { padding: 7px 16px; background: transparent; border: 1px solid transparent; color: var(--ash); font-family: 'Rajdhani', sans-serif; font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; border-radius: 2px; transition: all 0.2s; position: relative; }
+  .nav-btn.active { border-color: var(--border); color: var(--gold); background: rgba(201,168,76,0.06); }
+  .nav-btn:hover:not(.active):not(.disabled) { color: var(--silver); border-color: rgba(255,255,255,0.08); }
+  .nav-btn.disabled { opacity: 0.3; cursor: not-allowed; }
+  .nav-badge { position: absolute; top: -4px; right: -4px; background: var(--ember); color: #fff; font-size: 8px; padding: 1px 4px; border-radius: 10px; }
+
+  /* ── Main ── */
+  main { position: relative; z-index: 1; max-width: 1400px; margin: 0 auto; padding: 40px 40px 80px; }
+
+  .page-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 36px; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
+  .page-title h1 { font-family: 'Cormorant Garamond', serif; font-size: 42px; font-weight: 300; color: var(--cream); line-height: 1; }
+  .page-title h1 em { font-style: italic; color: var(--gold); }
+  .page-title p { margin-top: 8px; font-size: 13px; color: var(--ash); letter-spacing: 0.1em; text-transform: uppercase; }
+
+  /* ── Tabs ── */
+  .tabs { display: flex; gap: 2px; margin-bottom: 32px; background: var(--charcoal); border: 1px solid var(--border); border-radius: 4px; padding: 4px; width: fit-content; }
+  .tab { padding: 10px 28px; border: none; background: transparent; color: var(--ash); font-family: 'Rajdhani', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; border-radius: 3px; transition: all 0.2s; }
+  .tab.active { background: var(--gold); color: var(--black); }
+  .tab:hover:not(.active) { color: var(--silver); }
+
+  /* ── Layout ── */
+  .calculator-layout { display: grid; grid-template-columns: 1fr 420px; gap: 24px; align-items: start; }
+
+  /* ── Card ── */
+  .card { background: var(--charcoal); border: 1px solid var(--border); border-radius: 4px; overflow: hidden; margin-bottom: 20px; }
+  .card-header { padding: 16px 24px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; gap: 10px; }
+  .card-header h3 { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); font-weight: 600; }
+  .card-header .badge { padding: 2px 8px; background: rgba(201,168,76,0.1); border: 1px solid rgba(201,168,76,0.2); border-radius: 2px; font-size: 9px; letter-spacing: 0.1em; color: var(--gold); }
+  .card-body { padding: 20px 24px; }
+
+  /* ── Form fields ── */
+  .field-row { display: grid; gap: 14px; margin-bottom: 14px; }
+  .field-row.cols-2 { grid-template-columns: 1fr 1fr; }
+  .field-row.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+
+  .field { display: flex; flex-direction: column; gap: 5px; }
+  label { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--ash); font-weight: 600; }
+  .label-hint { font-size: 9px; color: var(--smoke); letter-spacing: 0.05em; text-transform: none; font-weight: 400; margin-left: 6px; }
+
+  input[type="number"], input[type="text"], select {
+    background: var(--steel); border: 1px solid rgba(255,255,255,0.08); border-radius: 3px;
+    padding: 10px 14px; color: var(--light); font-family: 'Rajdhani', sans-serif;
+    font-size: 15px; font-weight: 500; transition: all 0.2s; outline: none; width: 100%;
+  }
+  input:focus, select:focus { border-color: rgba(201,168,76,0.4); background: var(--iron); box-shadow: 0 0 0 3px rgba(201,168,76,0.06); }
+  select option { background: var(--steel); }
+
+  .input-prefix { position: relative; }
+  .input-prefix span { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--ash); font-size: 13px; pointer-events: none; }
+  .input-prefix input { padding-left: 26px; }
+
+  /* ── Slider ── */
+  .slider-wrap { display: flex; align-items: center; gap: 12px; }
+  input[type="range"] { flex: 1; -webkit-appearance: none; height: 3px; background: var(--smoke); border-radius: 2px; outline: none; }
+  input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; background: var(--gold); border-radius: 50%; cursor: pointer; transition: transform 0.15s; }
+  input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+  .slider-val { font-size: 15px; font-weight: 700; color: var(--gold); min-width: 48px; text-align: right; }
+
+  /* ── Canal cards ── */
+  .canal-grid { display: flex; flex-direction: column; gap: 10px; }
+  .canal-item { background: var(--steel); border: 1px solid rgba(255,255,255,0.06); border-radius: 3px; padding: 14px 16px; display: grid; grid-template-columns: 24px 1fr auto auto; align-items: center; gap: 12px; transition: border-color 0.2s; }
+  .canal-item:hover { border-color: var(--border); }
+  .canal-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .canal-name { font-size: 13px; font-weight: 600; letter-spacing: 0.05em; }
+  .canal-taxa { font-size: 11px; color: var(--ash); }
+  .canal-toggle { position: relative; width: 36px; height: 20px; }
+  .canal-toggle input { opacity: 0; width: 0; height: 0; }
+  .toggle-track { position: absolute; inset: 0; background: var(--smoke); border-radius: 20px; cursor: pointer; transition: background 0.2s; }
+  .canal-toggle input:checked + .toggle-track { background: var(--gold); }
+  .toggle-track::after { content: ''; position: absolute; left: 3px; top: 3px; width: 14px; height: 14px; background: #fff; border-radius: 50%; transition: transform 0.2s; }
+  .canal-toggle input:checked + .toggle-track::after { transform: translateX(16px); }
+
+  /* ── Results Panel ── */
+  .results-panel { position: sticky; top: 90px; }
+
+  .result-hero { background: linear-gradient(135deg, var(--charcoal) 0%, #1a1508 100%); border: 1px solid var(--border); border-radius: 4px; padding: 28px; margin-bottom: 16px; text-align: center; position: relative; overflow: hidden; }
+  .result-hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 80% 60% at 50% 100%, rgba(201,168,76,0.08) 0%, transparent 70%); }
+  .result-hero-label { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ash); margin-bottom: 8px; position: relative; }
+  .result-hero-value { font-family: 'Cormorant Garamond', serif; font-size: 52px; font-weight: 600; color: var(--gold); line-height: 1; position: relative; }
+  .result-hero-currency { font-size: 22px; color: var(--ash); }
+  .result-hero-sub { font-size: 12px; color: var(--ash); margin-top: 6px; position: relative; }
+
+  .result-channels { background: var(--charcoal); border: 1px solid var(--border); border-radius: 4px; overflow: hidden; margin-bottom: 16px; }
+  .result-ch-header { padding: 12px 20px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ash); }
+  .result-ch-item { padding: 14px 20px; border-bottom: 1px solid rgba(255,255,255,0.04); display: flex; align-items: center; justify-content: space-between; }
+  .result-ch-item:last-child { border-bottom: none; }
+  .result-ch-name { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; }
+  .result-ch-dot { width: 8px; height: 8px; border-radius: 50%; }
+  .result-ch-price { font-size: 15px; font-weight: 700; color: var(--cream); }
+  .result-ch-margin { font-size: 11px; padding: 2px 7px; border-radius: 2px; font-weight: 600; }
+  .margin-good { background: var(--green-dim); color: var(--green); }
+  .margin-ok { background: rgba(201,168,76,0.1); color: var(--gold); }
+  .margin-bad { background: var(--red-dim); color: var(--ember); }
+
+  /* ── Breakdown ── */
+  .breakdown { background: var(--charcoal); border: 1px solid var(--border); border-radius: 4px; overflow: hidden; margin-bottom: 16px; }
+  .breakdown-row { padding: 11px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.04); }
+  .breakdown-row:last-child { border-bottom: none; }
+  .breakdown-row.total { background: rgba(201,168,76,0.05); border-top: 1px solid var(--border); }
+  .breakdown-label { font-size: 12px; color: var(--silver); }
+  .breakdown-label.muted { color: var(--ash); font-size: 11px; }
+  .breakdown-value { font-size: 13px; font-weight: 600; color: var(--cream); }
+  .breakdown-value.cost { color: var(--ember); }
+  .breakdown-value.profit { color: var(--green); }
+  .breakdown-value.total { color: var(--gold); font-size: 15px; }
+
+  /* ── Save button ── */
+  .btn-primary { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 14px; background: var(--gold); color: var(--black); border: none; font-family: 'Rajdhani', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; border-radius: 3px; transition: all 0.25s; }
+  .btn-primary:hover { background: var(--gold-light); box-shadow: 0 8px 24px rgba(201,168,76,0.25); }
+
+  .btn-secondary { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 11px; background: transparent; color: var(--silver); border: 1px solid var(--border); font-family: 'Rajdhani', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; border-radius: 3px; transition: all 0.2s; margin-top: 10px; }
+  .btn-secondary:hover { border-color: var(--border-hover); color: var(--gold); }
+
+  /* ── Saved prices ── */
+  .saved-list { display: flex; flex-direction: column; gap: 12px; }
+  .saved-item { background: var(--charcoal); border: 1px solid var(--border); border-radius: 4px; padding: 18px 20px; display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: center; animation: cardIn 0.3s ease both; }
+  @keyframes cardIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  .saved-item-name { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 600; color: var(--cream); }
+  .saved-item-meta { font-size: 11px; color: var(--ash); margin-top: 3px; }
+  .saved-item-prices { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+  .price-tag { padding: 4px 10px; border-radius: 2px; font-size: 12px; font-weight: 700; }
+  .saved-actions { display: flex; flex-direction: column; gap: 6px; align-items: flex-end; }
+  .icon-btn { width: 30px; height: 30px; background: var(--steel); border: 1px solid rgba(255,255,255,0.06); border-radius: 2px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--ash); transition: all 0.2s; }
+  .icon-btn:hover { color: var(--gold); border-color: var(--border); }
+  .icon-btn.danger:hover { color: var(--ember); }
+
+  /* Toast */
+  .toast { position: fixed; bottom: 32px; right: 32px; background: var(--charcoal); border: 1px solid var(--gold); border-radius: 4px; padding: 14px 20px; display: flex; align-items: center; gap: 12px; font-size: 13px; color: var(--cream); box-shadow: 0 20px 40px rgba(0,0,0,0.5); transform: translateY(20px); opacity: 0; transition: all 0.3s; z-index: 300; pointer-events: none; }
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  .section-hidden { display: none; }
+  .divider { height: 1px; background: var(--border); margin: 6px 0 16px; }
+
+  @media (max-width: 900px) {
+    .calculator-layout { grid-template-columns: 1fr; }
+    .results-panel { position: static; }
+    header { padding: 0 20px; }
+    main { padding: 24px 20px 60px; }
+    .field-row.cols-3 { grid-template-columns: 1fr 1fr; }
+    .header-nav { display: none; }
+  }
+</style>
+<script src="braseiro-data.js"></script>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">
+      <svg viewBox="0 0 40 40" fill="none"><path d="M8 32 L28 8 L34 14 L16 36 Z" fill="none" stroke="#c9a84c" stroke-width="1.5"/><path d="M28 8 L34 14 L32 16 L26 10 Z" fill="#c9a84c" opacity="0.6"/><path d="M8 32 L12 34 L16 36 L14 32 Z" fill="#c44a1a" opacity="0.8"/><circle cx="31" cy="11" r="2" fill="#c9a84c" opacity="0.4"/></svg>
+    </div>
+    <div class="logo-text">
+      <span>Braseiro Premium Knives</span>
+      <span>Sistema de Gestão</span>
+    </div>
+  </div>
+  <nav class="header-nav">
+    <button class="nav-btn" onclick="location.href='braseiro-index.html'" style="color:var(--gold);border-color:var(--border)">← Início</button>
+    <button class="nav-btn" onclick="location.href='braseiro-cadastro-v2.html'">Produtos</button>
+    <button class="nav-btn active">Preços</button>
+    <button class="nav-btn disabled">Estoque <span class="nav-badge">Em breve</span></button>
+    <button class="nav-btn disabled">Vendas <span class="nav-badge">Em breve</span></button>
+    <button class="nav-btn disabled">Financeiro <span class="nav-badge">Em breve</span></button>
+  </nav>
+</header>
+
+<main>
+  <div class="page-header">
+    <div class="page-title">
+      <h1>Formação de <em>Preço</em></h1>
+      <p>Módulo 2 — Calculador por canal de venda</p>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('calcular')">Calcular Preço</button>
+    <button class="tab" onclick="switchTab('salvos')">Preços Salvos</button>
+  </div>
+
+  <!-- ── TAB: CALCULAR ── -->
+  <div id="tabCalcular">
+    <div class="calculator-layout">
+
+      <!-- LEFT: Inputs -->
+      <div>
+
+        <!-- Fluxo -->
+        <div class="card">
+          <div class="card-header">
+            <h3>Fluxo de Venda</h3>
+          </div>
+          <div class="card-body">
+            <div class="field-row">
+              <div class="field">
+                <label>Produto — buscar por código ou nome</label>
+                <div style="position:relative">
+                  <div style="position:relative">
+                    <svg style="position:absolute;left:11px;top:50%;transform:translateY(-50%);color:#6b6b6b;pointer-events:none;z-index:1"
+                      width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                    </svg>
+                    <input type="text" id="prodSearch"
+                      style="width:100%;padding-left:36px"
+                      placeholder="Digite o código ou nome do produto..."
+                      oninput="searchProduto(this.value)"
+                      onfocus="searchProduto(this.value || '')"
+                      onkeyup="searchProduto(this.value)"
+                      autocomplete="off"
+                      spellcheck="false">
+                  </div>
+                  <div id="prodSearchDrop"
+                    style="display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;
+                           background:#2a2a2a;border:1px solid rgba(201,168,76,.4);border-radius:3px;
+                           z-index:100;max-height:260px;overflow-y:auto;box-shadow:0 12px 32px rgba(0,0,0,.6)">
+                  </div>
+                </div>
+                <!-- Selected product card -->
+                <div id="prodSelectedCard" style="display:none;margin-top:8px;
+                  background:rgba(201,168,76,.07);border:1px solid rgba(201,168,76,.25);
+                  border-radius:3px;padding:10px 14px;align-items:center;justify-content:space-between;gap:12px">
+                  <div style="display:flex;align-items:center;gap:10px">
+                    <div style="width:44px;height:44px;background:#1e1e1e;border-radius:3px;overflow:hidden;flex-shrink:0">
+                      <img id="prodSelFoto" style="width:100%;height:100%;object-fit:cover;display:none" alt="">
+                      <div id="prodSelIcon" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:20px">🔪</div>
+                    </div>
+                    <div>
+                      <div id="prodSelCode" style="font-size:10px;color:#6b6b6b;letter-spacing:.12em;text-transform:uppercase"></div>
+                      <div id="prodSelName" style="font-size:14px;font-weight:600;color:#c9a84c;font-family:'Rajdhani',sans-serif"></div>
+                      <div id="prodSelMeta" style="font-size:11px;color:#6b6b6b;margin-top:1px"></div>
+                    </div>
+                  </div>
+                  <button onclick="clearProduto()"
+                    style="background:transparent;border:none;cursor:pointer;color:#6b6b6b;font-size:18px;padding:4px;flex-shrink:0"
+                    title="Trocar produto">✕</button>
+                </div>
+              </div>
+            </div>
+            <div id="productCostInfo" style="display:none;padding:10px 14px;background:rgba(76,175,122,.06);border:1px solid rgba(76,175,122,.2);border-radius:3px;margin-top:-4px;font-size:12px;color:#a8a8a8;line-height:1.6">
+              ✅ Custo base preenchido automaticamente a partir do produto cadastrado. Ajuste se necessário.
+            </div>
+            <div class="field-row cols-2">
+              <div class="field">
+                <label>Fluxo Principal</label>
+                <select id="fFluxo" onchange="toggleFluxo(); calc()">
+                  <option value="br">🇧🇷 Venda no Brasil (R$)</option>
+                  <option value="usa">🇺🇸 Exportar para EUA (USD)</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Câmbio USD → BRL <span class="label-hint">atualizar manualmente</span></label>
+                <div class="input-prefix">
+                  <span>R$</span>
+                  <input type="number" id="fCambio" value="5.85" step="0.01" oninput="calc()">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Custo de Produção -->
+        <div class="card">
+          <div class="card-header">
+            <h3>Custo de Produção</h3>
+            <span class="badge">Ponto de partida</span>
+          </div>
+          <div class="card-body">
+            <div class="field-row cols-2">
+              <div class="field">
+                <label>Custo de Fabricação (R$)</label>
+                <div class="input-prefix">
+                  <span>R$</span>
+                  <input type="number" id="fCustoFab" placeholder="0" step="1" oninput="calc()">
+                </div>
+              </div>
+              <div class="field">
+                <label>Matéria-Prima (R$)</label>
+                <div class="input-prefix">
+                  <span>R$</span>
+                  <input type="number" id="fMateria" placeholder="0" step="1" oninput="calc()">
+                </div>
+              </div>
+            </div>
+            <div class="field-row cols-3">
+              <div class="field">
+                <label>Mão de obra (R$)</label>
+                <div class="input-prefix">
+                  <span>R$</span>
+                  <input type="number" id="fMaoObra" placeholder="0" step="1" oninput="calc()">
+                </div>
+              </div>
+              <div class="field">
+                <label>Embalagem (R$)</label>
+                <div class="input-prefix">
+                  <span>R$</span>
+                  <input type="number" id="fEmbalagem" placeholder="0" step="1" oninput="calc()">
+                </div>
+              </div>
+              <div class="field">
+                <label>Outros custos (R$)</label>
+                <div class="input-prefix">
+                  <span>R$</span>
+                  <input type="number" id="fOutros" placeholder="0" step="1" oninput="calc()">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Exportação (só aparece no fluxo EUA) -->
+        <div class="card" id="cardExportacao">
+          <div class="card-header">
+            <h3>Exportação & Alfândega</h3>
+            <span class="badge">Fluxo EUA</span>
+          </div>
+          <div class="card-body">
+            <div class="field-row cols-2">
+              <div class="field">
+                <label>Frete Internacional (USD)</label>
+                <div class="input-prefix">
+                  <span>$</span>
+                  <input type="number" id="fFreteInt" placeholder="0" step="0.50" oninput="calc()">
+                </div>
+              </div>
+              <div class="field">
+                <label>Tarifa Alfândega EUA (%)</label>
+                <div class="slider-wrap">
+                  <input type="range" id="fAlfandega" min="0" max="30" value="5" step="0.5" oninput="updateSlider('fAlfandega','sAlfandega'); calc()">
+                  <span class="slider-val" id="sAlfandega">5%</span>
+                </div>
+              </div>
+            </div>
+            <div class="field-row cols-2">
+              <div class="field">
+                <label>IOF / Câmbio (%)</label>
+                <div class="slider-wrap">
+                  <input type="range" id="fIOF" min="0" max="10" value="1.1" step="0.1" oninput="updateSlider('fIOF','sIOF'); calc()">
+                  <span class="slider-val" id="sIOF">1.1%</span>
+                </div>
+              </div>
+              <div class="field">
+                <label>Seguro Carga (%)</label>
+                <div class="slider-wrap">
+                  <input type="range" id="fSeguro" min="0" max="5" value="0.5" step="0.1" oninput="updateSlider('fSeguro','sSeguro'); calc()">
+                  <span class="slider-val" id="sSeguro">0.5%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Impostos Brasil -->
+        <div class="card" id="cardImpostosBR">
+          <div class="card-header">
+            <h3>Impostos Brasil</h3>
+          </div>
+          <div class="card-body">
+            <div class="field-row cols-2">
+              <div class="field">
+                <label>Regime Tributário</label>
+                <select id="fRegime" onchange="setRegime(); calc()">
+                  <option value="simples">Simples Nacional (~6%)</option>
+                  <option value="lucro_presumido">Lucro Presumido (~13.33%)</option>
+                  <option value="mei">MEI (isento de ICMS/PIS/COFINS)</option>
+                  <option value="custom">Personalizado</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Total Impostos (%)</label>
+                <div class="slider-wrap">
+                  <input type="range" id="fImpostos" min="0" max="40" value="6" step="0.5" oninput="updateSlider('fImpostos','sImpostos'); calc()">
+                  <span class="slider-val" id="sImpostos">6%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Margem -->
+        <div class="card">
+          <div class="card-header">
+            <h3>Margem de Lucro</h3>
+          </div>
+          <div class="card-body">
+            <div class="field-row cols-2">
+              <div class="field">
+                <label>Margem Desejada (%)</label>
+                <div class="slider-wrap">
+                  <input type="range" id="fMargem" min="10" max="300" value="120" step="5" oninput="updateSlider('fMargem','sMargem'); calc()">
+                  <span class="slider-val" id="sMargem">120%</span>
+                </div>
+              </div>
+              <div class="field">
+                <label>Frete para Cliente</label>
+                <select id="fFreteCliente" onchange="calc()">
+                  <option value="cliente">Pago pelo cliente (não entra)</option>
+                  <option value="gratis">Grátis (absorvido no preço)</option>
+                  <option value="fixo">Fixo incluso no preço</option>
+                </select>
+              </div>
+            </div>
+            <div class="field-row" id="rowFreteFixo" style="display:none;">
+              <div class="field">
+                <label>Valor do Frete Incluso (R$)</label>
+                <div class="input-prefix">
+                  <span>R$</span>
+                  <input type="number" id="fFreteFixo" placeholder="0" step="1" oninput="calc()">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Canais -->
+        <div class="card">
+          <div class="card-header">
+            <h3>Canais de Venda</h3>
+            <span class="badge">Taxa por canal</span>
+          </div>
+          <div class="card-body">
+            <div class="canal-grid" id="canalGrid">
+              <!-- rendered by JS -->
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT: Results -->
+      <div class="results-panel">
+
+        <div class="result-hero">
+          <div class="result-hero-label">Custo Total Calculado</div>
+          <div class="result-hero-value" id="rCustoTotal">
+            <span class="result-hero-currency" id="rCurrency">R$</span><span id="rCustoNum">0</span>
+          </div>
+          <div class="result-hero-sub" id="rCustoSub">Preencha os custos para calcular</div>
+        </div>
+
+        <!-- Preços por canal -->
+        <div class="result-channels">
+          <div class="result-ch-header">Preço de Venda por Canal</div>
+          <div id="rCanais">
+            <div style="padding:20px;text-align:center;color:var(--ash);font-size:13px;">Ative os canais ao lado</div>
+          </div>
+        </div>
+
+        <!-- Breakdown -->
+        <div class="breakdown">
+          <div class="breakdown-row">
+            <span class="breakdown-label">Custo de produção</span>
+            <span class="breakdown-value cost" id="bProd">R$ 0</span>
+          </div>
+          <div class="breakdown-row">
+            <span class="breakdown-label muted">↳ Fabricação + materiais + mão de obra</span>
+            <span class="breakdown-value" id="bProdDetail" style="color:var(--ash);font-size:11px;"></span>
+          </div>
+          <div class="breakdown-row" id="rowBExport" style="display:none;">
+            <span class="breakdown-label">Exportação & alfândega</span>
+            <span class="breakdown-value cost" id="bExport">R$ 0</span>
+          </div>
+          <div class="breakdown-row">
+            <span class="breakdown-label">Impostos</span>
+            <span class="breakdown-value cost" id="bImpostos">R$ 0</span>
+          </div>
+          <div class="breakdown-row">
+            <span class="breakdown-label">Lucro (margem aplicada)</span>
+            <span class="breakdown-value profit" id="bLucro">R$ 0</span>
+          </div>
+          <div class="breakdown-row total">
+            <span class="breakdown-label" style="color:var(--gold);font-weight:700;">Preço Base (sem taxa canal)</span>
+            <span class="breakdown-value total" id="bTotal">R$ 0</span>
+          </div>
+        </div>
+
+        <button class="btn-secondary" id="btnCancelarEdicao" onclick="cancelarEdicao()" style="display:none;margin-right:8px;background:transparent;border:1px solid rgba(255,255,255,.15);color:var(--silver);padding:12px 20px;border-radius:3px;cursor:pointer;font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase">
+          ✕ Cancelar Edição
+        </button>
+        <button class="btn-primary" onclick="savePrice()">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+          Salvar Precificação
+        </button>
+        <button class="btn-secondary" onclick="copyResults()">
+          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copiar Resumo
+        </button>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TAB: SALVOS ── -->
+  <div id="tabSalvos" class="section-hidden">
+    <div id="savedList" class="saved-list"></div>
+    <div id="savedEmpty" style="display:none;padding:60px;text-align:center;color:var(--ash);">
+      <svg width="48" height="48" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin-bottom:16px;opacity:0.3;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 7H6a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2v-3M9 7V6a2 2 0 0 1 2-2h2M9 7h6m0 0v1a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2V7"/></svg>
+      <p style="font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--silver);margin-bottom:8px;">Nenhuma precificação salva</p>
+      <p style="font-size:13px;">Calcule um preço e salve para consultar aqui depois.</p>
+    </div>
+  </div>
+</main>
+
+<div class="toast" id="toast">
+  <svg width="16" height="16" fill="none" stroke="#c9a84c" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+  <span id="toastMsg">Salvo!</span>
+</div>
+
+<script>
+  // ── State ──
+  let savedPrices = JSON.parse(localStorage.getItem('braseiro_prices') || '[]');
+  let editingPriceId = null; // tracks which price is being edited
+
+  const canais = [
+    { id: 'loja',    name: 'Loja Física',      taxa: 0,     cor: '#c9a84c', ativo: true },
+    { id: 'site',    name: 'Site Próprio',      taxa: 3.5,   cor: '#4caf7a', ativo: true },
+    { id: 'insta',   name: 'Instagram/WhatsApp',taxa: 0,     cor: '#e055a0', ativo: true },
+    { id: 'ml',      name: 'Mercado Livre',     taxa: 14,    cor: '#ffe000', ativo: true },
+    { id: 'usa_site',name: 'Site EUA',          taxa: 2.9,   cor: '#64b5f6', ativo: false },
+    { id: 'amazon',  name: 'Amazon USA',        taxa: 15,    cor: '#ff9900', ativo: false },
+  ];
+
+  // ── Render canais ──
+  function renderCanais() {
+    const g = document.getElementById('canalGrid');
+    g.innerHTML = canais.map(c => `
+      <div class="canal-item">
+        <div class="canal-dot" style="background:${c.cor}"></div>
+        <div>
+          <div class="canal-name">${c.name}</div>
+          <div class="canal-taxa">Taxa: ${c.taxa}%</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <input type="number" value="${c.taxa}" step="0.1" min="0" max="50"
+            style="width:60px;padding:5px 8px;font-size:12px;text-align:center;"
+            onchange="canais.find(x=>x.id==='${c.id}').taxa=parseFloat(this.value)||0; calc()"
+            title="Editar taxa">
+        </div>
+        <label class="canal-toggle">
+          <input type="checkbox" ${c.ativo ? 'checked' : ''} onchange="canais.find(x=>x.id==='${c.id}').ativo=this.checked; calc()">
+          <span class="toggle-track"></span>
+        </label>
+      </div>
+    `).join('');
+  }
+
+  function updateSlider(sliderId, labelId) {
+    const v = document.getElementById(sliderId).value;
+    const label = document.getElementById(labelId);
+    label.textContent = v + '%';
+  }
+
+  function setRegime() {
+    const regime = document.getElementById('fRegime').value;
+    const map = { simples: 6, lucro_presumido: 13.33, mei: 0, custom: null };
+    if (map[regime] !== null) {
+      document.getElementById('fImpostos').value = map[regime];
+      document.getElementById('sImpostos').textContent = map[regime] + '%';
+    }
+  }
+
+  function toggleFluxo() {
+    const fluxo = document.getElementById('fFluxo').value;
+    document.getElementById('cardExportacao').style.display = fluxo === 'usa' ? 'block' : 'none';
+    document.getElementById('rowBExport').style.display = fluxo === 'usa' ? 'flex' : 'none';
+    document.getElementById('rCurrency').textContent = fluxo === 'usa' ? '$' : 'R$';
+  }
+
+  document.getElementById('fFreteCliente').addEventListener('change', function() {
+    document.getElementById('rowFreteFixo').style.display = this.value === 'fixo' ? 'block' : 'none';
+    calc();
+  });
+
+  // ── Core Calculator ──
+  function calc() {
+    const fluxo = document.getElementById('fFluxo').value;
+    const cambio = parseFloat(document.getElementById('fCambio').value) || 5.85;
+
+    const custoFab = parseFloat(document.getElementById('fCustoFab').value) || 0;
+    const materia  = parseFloat(document.getElementById('fMateria').value) || 0;
+    const maoObra  = parseFloat(document.getElementById('fMaoObra').value) || 0;
+    const embalagem= parseFloat(document.getElementById('fEmbalagem').value) || 0;
+    const outros   = parseFloat(document.getElementById('fOutros').value) || 0;
+
+    const custoProdBRL = custoFab + materia + maoObra + embalagem + outros;
+
+    // Exportação
+    let exportCostBRL = 0;
+    if (fluxo === 'usa') {
+      const freteIntUSD = parseFloat(document.getElementById('fFreteInt').value) || 0;
+      const alfandega = parseFloat(document.getElementById('fAlfandega').value) / 100;
+      const iof = parseFloat(document.getElementById('fIOF').value) / 100;
+      const seguro = parseFloat(document.getElementById('fSeguro').value) / 100;
+      const freteIntBRL = freteIntUSD * cambio;
+      exportCostBRL = freteIntBRL + (custoProdBRL * alfandega) + (custoProdBRL * iof) + (custoProdBRL * seguro);
+    }
+
+    const impostos = parseFloat(document.getElementById('fImpostos').value) / 100;
+    const margem   = parseFloat(document.getElementById('fMargem').value) / 100;
+
+    const freteFixo = document.getElementById('fFreteCliente').value === 'fixo'
+      ? (parseFloat(document.getElementById('fFreteFixo').value) || 0) : 0;
+
+    const custoTotal = custoProdBRL + exportCostBRL + freteFixo;
+    const impostosVal = custoTotal * impostos;
+    const lucroVal = (custoTotal + impostosVal) * margem;
+    const precoBase = custoTotal + impostosVal + lucroVal;
+
+    // Convert if USA flow
+    const divisor = fluxo === 'usa' ? cambio : 1;
+    const symbol = fluxo === 'usa' ? '$' : 'R$';
+
+    const fmt = (v, d) => (v / d).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+    // Hero
+    document.getElementById('rCustoNum').textContent = fmt(custoTotal, divisor);
+    document.getElementById('rCustoSub').textContent =
+      `Fabricação ${symbol}${fmt(custoProdBRL, divisor)} + Impostos ${symbol}${fmt(impostosVal, divisor)} + Margem ${symbol}${fmt(lucroVal, divisor)}`;
+
+    // Breakdown
+    document.getElementById('bProd').textContent = `${symbol} ${fmt(custoProdBRL, divisor)}`;
+    document.getElementById('bProdDetail').textContent = `Fab ${symbol}${fmt(custoFab,divisor)} | Mat ${symbol}${fmt(materia,divisor)} | MO ${symbol}${fmt(maoObra,divisor)}`;
+    document.getElementById('bExport').textContent = `${symbol} ${fmt(exportCostBRL, divisor)}`;
+    document.getElementById('bImpostos').textContent = `${symbol} ${fmt(impostosVal, divisor)}`;
+    document.getElementById('bLucro').textContent = `+ ${symbol} ${fmt(lucroVal, divisor)}`;
+    document.getElementById('bTotal').textContent = `${symbol} ${fmt(precoBase, divisor)}`;
+
+    // Canais
+    const ativos = canais.filter(c => c.ativo);
+    if (ativos.length === 0) {
+      document.getElementById('rCanais').innerHTML = '<div style="padding:20px;text-align:center;color:var(--ash);font-size:13px;">Ative pelo menos um canal</div>';
+      return;
+    }
+
+    document.getElementById('rCanais').innerHTML = ativos.map(c => {
+      const taxa = c.taxa / 100;
+      const precoCanal = precoBase / (1 - taxa);
+      const margemReal = ((precoCanal - custoTotal) / precoCanal * 100);
+      const mClass = margemReal > 40 ? 'margin-good' : margemReal > 20 ? 'margin-ok' : 'margin-bad';
+      return `
+        <div class="result-ch-item">
+          <div class="result-ch-name">
+            <div class="result-ch-dot" style="background:${c.cor}"></div>
+            ${c.name}
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span class="result-ch-margin ${mClass}">${margemReal.toFixed(0)}%</span>
+            <span class="result-ch-price">${symbol} ${fmt(precoCanal, divisor)}</span>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  // ── Save ──
+  function savePrice() {
+    const prodSearch = document.getElementById('prodSearch');
+  const prodName = document.getElementById('prodSelName');
+  const produto = (prodName ? prodName.textContent.trim() : '') ||
+                  (prodSearch ? prodSearch.value.trim() : '') ||
+                  'Produto sem nome';
+    const fluxo = document.getElementById('fFluxo').value;
+    const cambio = parseFloat(document.getElementById('fCambio').value) || 5.85;
+
+    const custoFab = parseFloat(document.getElementById('fCustoFab').value) || 0;
+    const materia  = parseFloat(document.getElementById('fMateria').value) || 0;
+    const maoObra  = parseFloat(document.getElementById('fMaoObra').value) || 0;
+    const embalagem= parseFloat(document.getElementById('fEmbalagem').value) || 0;
+    const outros   = parseFloat(document.getElementById('fOutros').value) || 0;
+    const custoProdBRL = custoFab + materia + maoObra + embalagem + outros;
+
+    let exportCostBRL = 0;
+    if (fluxo === 'usa') {
+      const freteIntUSD = parseFloat(document.getElementById('fFreteInt').value) || 0;
+      const alfandega = parseFloat(document.getElementById('fAlfandega').value) / 100;
+      const iof = parseFloat(document.getElementById('fIOF').value) / 100;
+      const seguro = parseFloat(document.getElementById('fSeguro').value) / 100;
+      exportCostBRL = (freteIntUSD * cambio) + (custoProdBRL * (alfandega + iof + seguro));
+    }
+
+    const impostos = parseFloat(document.getElementById('fImpostos').value) / 100;
+    const margem   = parseFloat(document.getElementById('fMargem').value) / 100;
+    const custoTotal = custoProdBRL + exportCostBRL;
+    const impostosVal = custoTotal * impostos;
+    const lucroVal = (custoTotal + impostosVal) * margem;
+    const precoBase = custoTotal + impostosVal + lucroVal;
+    const divisor = fluxo === 'usa' ? cambio : 1;
+    const symbol = fluxo === 'usa' ? '$' : 'R$';
+
+    const fmt = v => (v / divisor).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+    const precos = canais.filter(c => c.ativo).map(c => ({
+      canal: c.name,
+      cor: c.cor,
+      taxa: c.taxa,
+      preco: (precoBase / (1 - c.taxa / 100)) / divisor
+    }));
+
+    // Get selected product code from the selected card (more reliable than search field)
+    const prodSelCodeEl = document.getElementById('prodSelCode');
+    const prodSearchEl  = document.getElementById('prodSearch');
+    const prodCodigo = (prodSelCodeEl && prodSelCodeEl.textContent.trim())
+      ? prodSelCodeEl.textContent.trim().toUpperCase()
+      : (prodSearchEl ? prodSearchEl.value.trim().toUpperCase() : '');
+
+    const record = {
+      id: editingPriceId || Date.now(),
+      produto,
+      codigo: prodCodigo,
+      fluxo, symbol,
+      // Save ALL sub-costs for proper editing later
+      custoFab:   custoFab,
+      materia:    materia,
+      maoObra:    maoObra,
+      embalagem:  embalagem,
+      outros:     outros,
+      impostos:   Math.round(impostos * 100),
+      freteIntUSD: fluxo === 'usa' ? (parseFloat(document.getElementById('fFreteInt').value)||0) : 0,
+      alfandega:  fluxo === 'usa' ? (parseFloat(document.getElementById('fAlfandega').value)||0) : 0,
+      custoTotal: custoTotal / divisor,
+      precoBase:  precoBase / divisor,
+      margem:     Math.round(margem * 100),
+      // Save which canais were active and their taxa
+      canaisAtivos: canais.map(c => ({ id: c.id, ativo: c.ativo, taxa: c.taxa })),
+      precos,
+      data: new Date().toLocaleDateString('pt-BR')
+    };
+
+    if (editingPriceId) {
+      // UPDATE existing record
+      const idx = savedPrices.findIndex(p => p.id === editingPriceId);
+      if (idx >= 0) savedPrices[idx] = record;
+      else savedPrices.unshift(record);
+      editingPriceId = null;
+      // Update save button text back
+      const saveBtn = document.querySelector('[onclick="savePrice()"]');
+      if (saveBtn) saveBtn.innerHTML = '<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> SALVAR PRECIFICAÇÃO';
+    } else {
+      // NEW record — also replicate to all variations of same model
+      savedPrices.unshift(record);
+
+      // Replicate to variations if this is a model (parent)
+      if (prodCodigo) {
+        const models = JSON.parse(localStorage.getItem('braseiro_models_v2')||'[]');
+        const model = models.find(m => m.codigo.toUpperCase() === prodCodigo.toUpperCase());
+        if (model && model.variacoes && model.variacoes.length > 0) {
+          let replicaCount = 0;
+          model.variacoes.forEach(v => {
+            // Only add if variation doesn't already have its own price
+            const alreadyHas = savedPrices.find(p => p.codigo && p.codigo.toUpperCase() === v.codigo.toUpperCase());
+            if (!alreadyHas) {
+              savedPrices.unshift({
+                ...record,
+                id: Date.now() + Math.random(),
+                produto: model.nome + ' — ' + v.desc,
+                codigo: v.codigo,
+                _replicadoDe: prodCodigo
+              });
+              replicaCount++;
+            }
+          });
+          if (replicaCount > 0) {
+            showToast('Precificação salva e replicada para ' + replicaCount + ' variações! 🎯');
+            localStorage.setItem('braseiro_prices', JSON.stringify(savedPrices));
+            renderSaved();
+            return;
+          }
+        }
+      }
+    }
+
+    localStorage.setItem('braseiro_prices', JSON.stringify(savedPrices));
+    showToast(editingPriceId ? 'Precificação atualizada! ✅' : 'Precificação salva! ✅');
+    renderSaved();
+  }
+
+  function cancelarEdicao() {
+    editingPriceId = null;
+    document.getElementById('btnCancelarEdicao').style.display = 'none';
+    const saveBtn = document.querySelector('[onclick="savePrice()"]');
+    if (saveBtn) saveBtn.innerHTML = '<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> SALVAR PRECIFICAÇÃO';
+    clearProduto();
+    showToast('Edição cancelada');
+  }
+
+  function loadPrice(id) {
+    const p = savedPrices.find(x => x.id === id);
+    if (!p) return;
+
+    switchTab('calcular');
+
+    // Restore product card
+    const prodSearch = document.getElementById('prodSearch');
+    if (prodSearch) prodSearch.value = p.codigo || p.produto || '';
+    const card = document.getElementById('prodSelectedCard');
+    if (card) {
+      card.style.display = 'flex';
+      const codeEl = document.getElementById('prodSelCode');
+      const nameEl = document.getElementById('prodSelName');
+      const metaEl = document.getElementById('prodSelMeta');
+      if (codeEl) codeEl.textContent = p.codigo || '';
+      if (nameEl) nameEl.textContent = p.produto || '';
+      if (metaEl) metaEl.textContent = 'Custo: R$ ' + (p.custoFab||p.custoTotal||0).toFixed(2);
+    }
+
+    // Restore flow
+    document.getElementById('fFluxo').value = p.fluxo || 'brasil';
+    toggleFluxo();
+
+    // Restore sub-costs (NOT custoTotal — restore original fields)
+    const setVal = (id, val) => { const el = document.getElementById(id); if (el && val !== undefined) el.value = val; };
+    setVal('fCustoFab',  p.custoFab   || p.custoTotal || 0);
+    setVal('fMateria',   p.materia    || 0);
+    setVal('fMaoObra',   p.maoObra    || 0);
+    setVal('fEmbalagem', p.embalagem  || 0);
+    setVal('fOutros',    p.outros     || 0);
+    if (p.impostos !== undefined) setVal('fImpostos', p.impostos);
+
+    // Restore USA export costs if applicable
+    if (p.fluxo === 'usa') {
+      setVal('fFreteInt',  p.freteIntUSD || 0);
+      setVal('fAlfandega', p.alfandega   || 0);
+    }
+
+    // Restore margin (stored as integer 0-200, slider expects same)
+    setVal('fMargem', p.margem || 50);
+    // Update slider display
+    const sMargemEl = document.getElementById('sMargem');
+    if (sMargemEl) sMargemEl.textContent = (p.margem || 50) + '%';
+
+    // Restore canais ativo state (critical!)
+    if (p.canaisAtivos && p.canaisAtivos.length > 0) {
+      p.canaisAtivos.forEach(saved => {
+        const canal = canais.find(c => c.id === saved.id);
+        if (canal) {
+          canal.ativo = saved.ativo;
+          canal.taxa  = saved.taxa;
+        }
+      });
+      renderCanais();
+    }
+
+    document.getElementById('productCostInfo').style.display = 'block';
+
+    // Mark as editing
+    editingPriceId = id;
+    const saveBtn = document.querySelector('[onclick="savePrice()"]');
+    if (saveBtn) saveBtn.innerHTML = '✏️ ATUALIZAR PRECIFICAÇÃO';
+    const cancelBtn = document.getElementById('btnCancelarEdicao');
+    if (cancelBtn) cancelBtn.style.display = 'inline-flex';
+
+    calc();
+    showToast('Precificação carregada — altere e clique em Atualizar ✏️');
+  }
+
+  function deletePrice(id) {
+    savedPrices = savedPrices.filter(p => p.id !== id);
+    localStorage.setItem('braseiro_prices', JSON.stringify(savedPrices));
+    renderSaved();
+    showToast('Removido.');
+  }
+
+  // showTab is an alias for switchTab
+  function showTab(tab) { switchTab(tab); }
+
+  function renderSaved() {
+    const list = document.getElementById('savedList');
+    const empty = document.getElementById('savedEmpty');
+    if (savedPrices.length === 0) { list.innerHTML = ''; empty.style.display = 'block'; return; }
+    empty.style.display = 'none';
+    list.innerHTML = savedPrices.map(p => `
+      <div class="saved-item">
+        <div>
+          <div class="saved-item-name">${p.produto}</div>
+          <div class="saved-item-meta">${p.fluxo === 'usa' ? '🇺🇸 Exportação EUA' : '🇧🇷 Venda Brasil'} · Margem ${p.margem}% · Salvo em ${p.data}</div>
+          <div class="saved-item-prices" style="margin-top:10px;">
+            ${p.precos.map(c => `
+              <span class="price-tag" style="background:${c.cor}22;color:${c.cor};border:1px solid ${c.cor}44;">
+                ${c.canal}: ${p.symbol} ${c.preco.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}
+              </span>`).join('')}
+          </div>
+        </div>
+        <div class="saved-actions">
+          <button class="icon-btn" onclick="loadPrice(${p.id})" title="Editar / Carregar esta precificação" style="color:var(--gold);border-color:rgba(201,168,76,.3)">
+            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          </button>
+          <button class="icon-btn danger" onclick="deletePrice(${p.id})" title="Excluir">
+            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M9 6V4h6v2"/></svg>
+          </button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function copyResults() {
+    const prodNameEl = document.getElementById('prodSelName');
+  const produto = (prodNameEl ? prodNameEl.textContent.trim() : '') ||
+                  (document.getElementById('prodSearch') ? document.getElementById('prodSearch').value.trim() : '') ||
+                  'Produto';
+    const rows = document.querySelectorAll('.result-ch-item');
+    let text = `BRASEIRO PREMIUM KNIVES — PRECIFICAÇÃO\n${produto}\n${'─'.repeat(40)}\n`;
+    rows.forEach(r => {
+      const name = r.querySelector('.result-ch-name')?.textContent?.trim();
+      const price = r.querySelector('.result-ch-price')?.textContent?.trim();
+      const margin = r.querySelector('.result-ch-margin')?.textContent?.trim();
+      if (name && price) text += `${name}: ${price} (margem ${margin})\n`;
+    });
+    text += `${'─'.repeat(40)}\nCusto Total: ${document.getElementById('rCustoNum').textContent}`;
+    navigator.clipboard.writeText(text).then(() => showToast('Copiado para a área de transferência!'));
+  }
+
+  function switchTab(tab) {
+    document.getElementById('tabCalcular').classList.toggle('section-hidden', tab !== 'calcular');
+    document.getElementById('tabSalvos').classList.toggle('section-hidden', tab !== 'salvos');
+    document.querySelectorAll('.tab').forEach((t, i) => {
+      t.classList.toggle('active', (i === 0 && tab === 'calcular') || (i === 1 && tab === 'salvos'));
+    });
+    if (tab === 'salvos') renderSaved();
+  }
+
+  function showToast(msg) {
+    document.getElementById('toastMsg').textContent = msg;
+    const t = document.getElementById('toast');
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+
+  // ── Init ──
+  renderCanais();
+  toggleFluxo();
+  calc();
+
+  // ══════════════════════════════════════════
+  // PRODUCT SEARCH — busca integrada de produtos
+  // ══════════════════════════════════════════
+
+  function getProductsFromStorage() {
+    const models = JSON.parse(localStorage.getItem('braseiro_models_v2') || '[]');
+    const list = [];
+    models.forEach(m => {
+      list.push({
+        codigo: m.codigo, nome: m.nome,
+        colecao: m.colecao||'', custo: m.custo||0,
+        moeda: m.moeda||'BRL', foto: m.foto||null
+      });
+      (m.variacoes||[]).forEach(v => {
+        list.push({
+          codigo: v.codigo,
+          nome: m.nome + (v.desc ? ' — ' + v.desc : ''),
+          colecao: m.colecao||'', custo: v.custo||m.custo||0,
+          moeda: m.moeda||'BRL', foto: v.foto||m.foto||null
+        });
+      });
+    });
+    return list;
+  }
+
+  function searchProduto(query) {
+    const drop = document.getElementById('prodSearchDrop');
+    if (!drop) return;
+
+    const all = getProductsFromStorage();
+    const q = (query||'').toLowerCase().trim();
+    const results = q === ''
+      ? all.slice(0, 10)
+      : all.filter(p =>
+          p.codigo.toLowerCase().includes(q) ||
+          p.nome.toLowerCase().includes(q) ||
+          (p.colecao||'').toLowerCase().includes(q)
+        ).slice(0, 10);
+
+    if (all.length === 0) {
+      drop.innerHTML = '<div style="padding:16px;text-align:center;color:#6b6b6b;font-size:13px">Nenhum produto cadastrado.<br><a href="braseiro-cadastro-v2.html" style="color:#c9a84c">→ Cadastrar no Módulo 1</a></div>';
+      drop.style.display = 'block';
+      return;
+    }
+
+    if (results.length === 0) {
+      drop.innerHTML = `<div style="padding:16px;text-align:center;color:#6b6b6b;font-size:13px">Nenhum resultado para "<b style="color:#e8e4de">${query}</b>"</div>`;
+      drop.style.display = 'block';
+      return;
+    }
+
+    const stock = JSON.parse(localStorage.getItem('braseiro_stock')||'[]');
+    drop.innerHTML = results.map(p => {
+      const qty = stock.filter(s=>s.codigo.toUpperCase()===p.codigo.toUpperCase()).reduce((s,i)=>s+(i.qtd||0),0);
+      const qtyColor = qty > 0 ? '#4caf7a' : '#c44a1a';
+      const fotoHtml = p.foto
+        ? `<img src="${p.foto}" style="width:42px;height:42px;object-fit:cover;border-radius:3px;flex-shrink:0">`
+        : `<div style="width:42px;height:42px;background:#1e1e1e;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">🔪</div>`;
+      const safeNome = p.nome.replace(/'/g, "\'").replace(/"/g, '&quot;');
+      const safeCodigo = p.codigo.replace(/'/g, "\'");
+      return `<div
+        onmousedown="selectProduto('${safeCodigo}','${safeNome}',${p.custo},'${p.moeda}','${p.foto||''}')"
+        style="display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer;
+               border-bottom:1px solid rgba(255,255,255,.04)"
+        onmouseover="this.style.background='rgba(201,168,76,.1)'"
+        onmouseout="this.style.background='transparent'">
+        ${fotoHtml}
+        <div style="flex:1;min-width:0">
+          <div style="font-size:13px;font-weight:700;color:#c9a84c;font-family:'Rajdhani',sans-serif">${p.codigo}</div>
+          <div style="font-size:11px;color:#a8a8a8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.nome}</div>
+          ${p.colecao ? `<div style="font-size:10px;color:#6b6b6b">${p.colecao}</div>` : ''}
+        </div>
+        <div style="text-align:right;flex-shrink:0">
+          ${p.custo ? `<div style="font-size:13px;font-weight:700;color:#c9a84c">R$ ${p.custo.toFixed(2)}</div>` : ''}
+          <div style="font-size:10px;color:${qtyColor}">${qty} em estoque</div>
+        </div>
+      </div>`;
+    }).join('');
+    drop.style.display = 'block';
+  }
+
+  function selectProduto(codigo, nome, custo, moeda, foto) {
+    // Hide dropdown
+    document.getElementById('prodSearchDrop').style.display = 'none';
+    document.getElementById('prodSearch').value = codigo;
+
+    // Show selected card
+    const card = document.getElementById('prodSelectedCard');
+    card.style.display = 'flex';
+    document.getElementById('prodSelCode').textContent = codigo;
+    document.getElementById('prodSelName').textContent = nome;
+    document.getElementById('prodSelMeta').textContent = custo ? 'Custo cadastrado: R$ ' + parseFloat(custo).toFixed(2) : '';
+
+    const fotoEl = document.getElementById('prodSelFoto');
+    const iconEl = document.getElementById('prodSelIcon');
+    if (foto) {
+      fotoEl.src = foto; fotoEl.style.display = 'block'; iconEl.style.display = 'none';
+    } else {
+      fotoEl.style.display = 'none'; iconEl.style.display = 'flex';
+    }
+
+    // Auto-fill cost
+    if (custo > 0) {
+      document.getElementById('fCustoFab').value = parseFloat(custo).toFixed(2);
+      document.getElementById('productCostInfo').style.display = 'block';
+    }
+    if (moeda === 'USD') document.getElementById('fMoeda').value = 'USD';
+    calc();
+  }
+
+  function clearProduto() {
+    document.getElementById('prodSearch').value = '';
+    document.getElementById('prodSelectedCard').style.display = 'none';
+    document.getElementById('productCostInfo').style.display = 'none';
+    document.getElementById('fCustoFab').value = '';
+    calc();
+  }
+
+  // Close dropdown on click outside — use mousedown to not interfere with item click
+  document.addEventListener('mousedown', function(e) {
+    const input = document.getElementById('prodSearch');
+    const drop  = document.getElementById('prodSearchDrop');
+    if (!input || !drop) return;
+    if (!input.contains(e.target) && !drop.contains(e.target)) {
+      drop.style.display = 'none';
+    }
+  });
+
+</script>
+</body>
+</html>

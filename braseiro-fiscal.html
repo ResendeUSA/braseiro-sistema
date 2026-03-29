@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Braseiro Premium Knives — Relatórios Fiscais</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{
+  --black:#0a0a0a;--charcoal:#141414;--steel:#1e1e1e;--iron:#2a2a2a;
+  --smoke:#3a3a3a;--ash:#6b6b6b;--silver:#a8a8a8;--light:#e8e4de;
+  --cream:#f5f1eb;--gold:#c9a84c;--gold-light:#e8c96b;--ember:#c44a1a;
+  --green:#4caf7a;--blue:#5b9cf6;--purple:#a78bfa;--teal:#2dd4bf;
+  --border:rgba(201,168,76,.2);--border-h:rgba(201,168,76,.5);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--black);color:var(--light);font-family:'Rajdhani',sans-serif;min-height:100vh}
+body::before{content:'';position:fixed;inset:0;background:
+  radial-gradient(ellipse 70% 50% at 10% 90%,rgba(91,156,246,.05) 0%,transparent 60%),
+  radial-gradient(ellipse 60% 40% at 90% 10%,rgba(201,168,76,.05) 0%,transparent 50%);
+  pointer-events:none;z-index:0}
+
+header{position:sticky;top:0;z-index:100;background:rgba(10,10,10,.96);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);padding:0 40px;display:flex;align-items:center;
+  justify-content:space-between;height:70px}
+.logo{display:flex;align-items:center;gap:14px}
+.logo svg{width:36px;height:36px}
+.logo-text span:first-child{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;letter-spacing:.05em;color:var(--gold);display:block}
+.logo-text span:last-child{font-size:9px;letter-spacing:.25em;color:var(--ash);text-transform:uppercase;display:block;margin-top:2px}
+.nav{display:flex;gap:6px}
+.nb{padding:7px 16px;background:transparent;border:1px solid transparent;color:var(--ash);
+  font-family:'Rajdhani',sans-serif;font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+  cursor:pointer;border-radius:2px;transition:all .2s}
+.nb.active{border-color:var(--border);color:var(--gold);background:rgba(201,168,76,.06)}
+.nb:hover:not(.active){color:var(--silver);border-color:rgba(255,255,255,.08)}
+
+main{position:relative;z-index:1;max-width:1300px;margin:0 auto;padding:40px 40px 80px}
+
+.ph{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:32px;padding-bottom:22px;border-bottom:1px solid var(--border)}
+.ph h1{font-family:'Cormorant Garamond',serif;font-size:42px;font-weight:300;color:var(--cream);line-height:1}
+.ph h1 em{font-style:italic;color:var(--gold)}
+.ph p{margin-top:8px;font-size:13px;color:var(--ash);letter-spacing:.1em;text-transform:uppercase}
+
+/* Period selector */
+.period-bar{display:flex;align-items:center;gap:16px;margin-bottom:28px;flex-wrap:wrap}
+.period-label{font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--ash)}
+.period-btns{display:flex;gap:4px;background:var(--charcoal);border:1px solid var(--border);border-radius:4px;padding:4px}
+.pb{padding:8px 18px;border:none;background:transparent;color:var(--ash);font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;border-radius:3px;transition:all .2s}
+.pb.active{background:var(--gold);color:var(--black)}
+.year-sel{background:var(--steel);border:1px solid var(--border);border-radius:3px;padding:8px 14px;color:var(--light);font-family:'Rajdhani',sans-serif;font-size:13px;outline:none}
+.btn-p{display:flex;align-items:center;gap:8px;padding:10px 22px;background:var(--gold);color:var(--black);border:none;font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;border-radius:2px;transition:all .25s}
+.btn-p:hover{background:var(--gold-light);box-shadow:0 6px 20px rgba(201,168,76,.25)}
+
+/* Disclaimer */
+.disclaimer{background:rgba(245,158,11,.05);border:1px solid rgba(245,158,11,.2);border-radius:4px;padding:14px 20px;margin-bottom:28px;display:flex;gap:12px;align-items:flex-start}
+.disc-icon{font-size:18px;flex-shrink:0}
+.disc-text{font-size:12px;color:var(--silver);line-height:1.6}
+.disc-text strong{color:#f59e0b}
+
+/* KPI grid */
+.kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:4px;margin-bottom:24px;overflow:hidden}
+.kpi{background:var(--charcoal);padding:16px 20px;position:relative;overflow:hidden}
+.kpi::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px}
+.kpi.k1::after{background:var(--green)}
+.kpi.k2::after{background:var(--ember)}
+.kpi.k3::after{background:var(--gold)}
+.kpi.k4::after{background:var(--blue)}
+.kpi.k5::after{background:var(--purple)}
+.kpi-l{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--ash);margin-bottom:5px}
+.kpi-v{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:600;line-height:1}
+.kpi-v.green{color:var(--green)}.kpi-v.ember{color:var(--ember)}
+.kpi-v.gold{color:var(--gold)}.kpi-v.blue{color:var(--blue)}.kpi-v.purple{color:var(--purple)}
+.kpi-sub{font-size:10px;color:var(--ash);margin-top:3px}
+
+/* Section cards */
+.section-grid{display:grid;gap:20px;margin-bottom:20px}
+.section-grid.c2{grid-template-columns:1fr 1fr}
+
+.tax-card{background:var(--charcoal);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+.tc-header{padding:16px 22px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;justify-content:space-between}
+.tc-title{font-size:11px;letter-spacing:.18em;text-transform:uppercase;font-weight:700}
+.tc-title.green{color:var(--green)}.tc-title.blue{color:var(--blue)}
+.tc-title.gold{color:var(--gold)}.tc-title.purple{color:var(--purple)}
+.tc-title.ember{color:var(--ember)}
+.tc-badge{padding:3px 10px;border-radius:2px;font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+.tc-body{padding:20px 22px}
+
+/* Table */
+.tax-table{width:100%;border-collapse:collapse}
+.tax-table th{text-align:left;font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--ash);padding:8px 12px;border-bottom:1px solid var(--border)}
+.tax-table td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.04);font-size:13px;color:var(--silver);vertical-align:middle}
+.tax-table tr:last-child td{border-bottom:none}
+.tax-table tr:hover td{background:rgba(255,255,255,.02)}
+.td-strong{color:var(--cream);font-weight:600}
+.td-gold{color:var(--gold);font-weight:700}
+.td-green{color:var(--green);font-weight:700}
+.td-red{color:var(--ember);font-weight:700}
+.td-blue{color:var(--blue)}
+.total-row td{border-top:1px solid var(--border);font-weight:700;color:var(--cream)}
+
+/* Quarterly boxes */
+.quarter-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.q-box{background:var(--steel);border:1px solid rgba(255,255,255,.07);border-radius:3px;padding:14px;cursor:pointer;transition:all .2s}
+.q-box:hover{border-color:var(--border)}
+.q-box.active-q{background:rgba(201,168,76,.08);border-color:rgba(201,168,76,.35)}
+.q-label{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--ash);margin-bottom:6px}
+.q-sales{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--cream);line-height:1}
+.q-tax{font-size:11px;color:var(--gold);margin-top:3px}
+.q-status{display:inline-flex;align-items:center;gap:4px;font-size:9px;font-weight:700;letter-spacing:.08em;margin-top:6px;padding:2px 7px;border-radius:2px}
+.qs-due{background:rgba(196,74,26,.12);color:var(--ember);border:1px solid rgba(196,74,26,.25)}
+.qs-paid{background:rgba(76,175,122,.12);color:var(--green);border:1px solid rgba(76,175,122,.25)}
+.qs-future{background:rgba(255,255,255,.05);color:var(--ash)}
+
+/* State nexus */
+.state-list{display:flex;flex-direction:column;gap:8px}
+.state-row{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--steel);border-radius:3px;border:1px solid rgba(255,255,255,.06)}
+.state-name{font-size:13px;font-weight:600;color:var(--cream)}
+.state-sales{font-size:12px;color:var(--ash)}
+.state-flag{font-size:18px;margin-right:8px}
+.nexus-badge{padding:3px 8px;border-radius:2px;font-size:9px;font-weight:700;letter-spacing:.08em}
+.nb-tx{background:rgba(196,74,26,.12);color:var(--ember);border:1px solid rgba(196,74,26,.25)}
+.nb-other{background:rgba(91,156,246,.08);color:var(--blue);border:1px solid rgba(91,156,246,.2)}
+.nb-intl{background:rgba(76,175,122,.08);color:var(--green);border:1px solid rgba(76,175,122,.2)}
+
+/* COGS breakdown */
+.cogs-row{display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:12px;padding:10px 14px;background:var(--steel);border-radius:3px;border:1px solid rgba(255,255,255,.06);margin-bottom:8px}
+.cogs-label{font-size:13px;color:var(--silver)}
+.cogs-val{font-size:14px;font-weight:700;color:var(--cream);text-align:right}
+.cogs-pct{font-size:11px;color:var(--ash);min-width:36px;text-align:right}
+
+/* IRS summary */
+.irs-box{background:rgba(91,156,246,.05);border:1px solid rgba(91,156,246,.2);border-radius:4px;padding:20px 22px;margin-bottom:14px}
+.irs-title{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--blue);font-weight:700;margin-bottom:14px}
+.irs-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.irs-row:last-child{border-bottom:none}
+.irs-label{font-size:13px;color:var(--silver)}
+.irs-val{font-size:14px;font-weight:700;color:var(--cream)}
+.irs-row.highlight .irs-label{color:var(--gold);font-weight:700}
+.irs-row.highlight .irs-val{color:var(--gold);font-size:18px}
+
+/* Contador report */
+.report-box{background:var(--steel);border:1px solid var(--border);border-radius:3px;padding:16px 18px;font-family:monospace;font-size:11px;color:var(--silver);line-height:1.8;white-space:pre-wrap;max-height:400px;overflow-y:auto}
+
+/* Print button */
+.print-bar{position:fixed;bottom:28px;right:28px;display:flex;gap:8px;z-index:50}
+.print-btn{padding:10px 20px;background:var(--gold);color:var(--black);border:none;font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;border-radius:3px;transition:all .2s;box-shadow:0 8px 24px rgba(0,0,0,.4)}
+.print-btn:hover{background:var(--gold-light)}
+
+.toast{position:fixed;bottom:80px;right:28px;background:var(--charcoal);border:1px solid var(--gold);border-radius:4px;padding:13px 18px;display:flex;align-items:center;gap:10px;font-size:13px;color:var(--cream);transform:translateY(20px);opacity:0;transition:all .3s;z-index:300;pointer-events:none}
+.toast.show{transform:translateY(0);opacity:1}
+
+.empty-note{padding:30px;text-align:center;color:var(--ash);font-size:13px}
+
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:var(--charcoal)}
+::-webkit-scrollbar-thumb{background:var(--smoke);border-radius:3px}
+
+@media(max-width:900px){
+  header{padding:0 20px}main{padding:24px 20px 60px}
+  .kpi-grid{grid-template-columns:1fr 1fr}
+  .section-grid.c2{grid-template-columns:1fr}
+  .quarter-grid{grid-template-columns:1fr 1fr}
+  .nav{display:none}
+}
+@media print{
+  header,.period-bar,.print-bar,.toast{display:none!important}
+  body{background:#fff;color:#000}
+  .tax-card{border:1px solid #ccc;break-inside:avoid}
+  .tc-title,.kpi-v,.irs-label,.irs-val{color:#000!important}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <svg viewBox="0 0 40 40" fill="none"><path d="M8 32 L28 8 L34 14 L16 36 Z" fill="none" stroke="#c9a84c" stroke-width="1.5"/><path d="M28 8 L34 14 L32 16 L26 10 Z" fill="#c9a84c" opacity="0.6"/><path d="M8 32 L12 34 L16 36 L14 32 Z" fill="#c44a1a" opacity="0.8"/><circle cx="31" cy="11" r="2" fill="#c9a84c" opacity="0.4"/></svg>
+    <div class="logo-text"><span>Braseiro Premium Knives</span><span>Sistema de Gestão</span></div>
+  </div>
+  <nav class="nav">
+    <button class="nb" onclick="location.href='braseiro-index.html'">Início</button>
+    <button class="nb" onclick="location.href='braseiro-vendas-v2.html'">Vendas</button>
+    <button class="nb active">Fiscal</button>
+    <button class="nb" onclick="location.href='braseiro-dashboard.html'">Dashboard</button>
+  </nav>
+</header>
+
+<main>
+  <div class="ph">
+    <div>
+      <h1>Relatórios <em>Fiscais</em></h1>
+      <p>Texas Sales Tax · IRS · COGS · Contador</p>
+    </div>
+    <button class="btn-p" onclick="generateCounterReport()">
+      <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      Relatório para Contador
+    </button>
+  </div>
+
+  <!-- Disclaimer -->
+  <div class="disclaimer">
+    <div class="disc-icon">⚠️</div>
+    <div class="disc-text">
+      <strong>Aviso importante:</strong> Este módulo organiza seus dados para fins fiscais, mas <strong>não substitui um contador</strong>. LLC Multi Member (Form 1065 + K-1) é uma declaração complexa. Leve estes relatórios ao seu CPA. Texas Sales Tax: prazo trimestral — Jan, Apr, Jul, Oct 20th. Para registrar: <strong>comptroller.texas.gov</strong>
+    </div>
+  </div>
+
+  <!-- Period selector -->
+  <div class="period-bar">
+    <span class="period-label">Período:</span>
+    <div class="period-btns">
+      <button class="pb" onclick="setQuarter(1,this)">Q1 Jan–Mar</button>
+      <button class="pb" onclick="setQuarter(2,this)">Q2 Apr–Jun</button>
+      <button class="pb" onclick="setQuarter(3,this)">Q3 Jul–Sep</button>
+      <button class="pb" onclick="setQuarter(4,this)">Q4 Oct–Dec</button>
+      <button class="pb active" onclick="setQuarter(0,this)">Ano Completo</button>
+    </div>
+    <select class="year-sel" id="yearSel" onchange="buildAll()">
+      <option value="2026">2026</option>
+      <option value="2025">2025</option>
+      <option value="2024">2024</option>
+    </select>
+  </div>
+
+  <!-- KPIs -->
+  <div class="kpi-grid">
+    <div class="kpi k1"><div class="kpi-l">Receita Total</div><div class="kpi-v green" id="kReceita">$0</div><div class="kpi-sub">todas as vendas</div></div>
+    <div class="kpi k2"><div class="kpi-l">Texas Sales Tax Due</div><div class="kpi-v ember" id="kTxTax">$0</div><div class="kpi-sub">8.25% vendas no TX</div></div>
+    <div class="kpi k3"><div class="kpi-l">COGS</div><div class="kpi-v gold" id="kCogs">$0</div><div class="kpi-sub">custo dos produtos</div></div>
+    <div class="kpi k4"><div class="kpi-l">Lucro Estimado</div><div class="kpi-v blue" id="kLucro">$0</div><div class="kpi-sub">receita – COGS</div></div>
+    <div class="kpi k5"><div class="kpi-l">Exportações</div><div class="kpi-v purple" id="kExport">$0</div><div class="kpi-sub">fora dos EUA</div></div>
+  </div>
+
+  <!-- Row 1: TX Sales Tax + Quarterly -->
+  <div class="section-grid c2">
+
+    <!-- Texas Sales Tax -->
+    <div class="tax-card">
+      <div class="tc-header">
+        <div>
+          <div class="tc-title ember">🤠 Texas Sales Tax</div>
+          <div style="font-size:10px;color:var(--ash);margin-top:2px">Rate: 8.25% · Prazo: dia 20 do mês seguinte ao trimestre</div>
+        </div>
+        <span class="tc-badge" style="background:rgba(196,74,26,.12);color:var(--ember);border:1px solid rgba(196,74,26,.25)">TX Only</span>
+      </div>
+      <div class="tc-body">
+        <div class="quarter-grid" id="quarterGrid"></div>
+        <table class="tax-table">
+          <tr><th>Período</th><th>Vendas no TX</th><th>Tax Rate</th><th>Tax Due</th><th>Status</th></tr>
+          <tbody id="txTaxTable"></tbody>
+          <tr class="total-row"><td><strong>Total Ano</strong></td><td class="td-gold" id="txTotalSales">$0</td><td>8.25%</td><td class="td-red" id="txTotalTax">$0</td><td></td></tr>
+        </table>
+        <div style="margin-top:14px;padding:10px 14px;background:rgba(196,74,26,.05);border:1px solid rgba(196,74,26,.15);border-radius:3px;font-size:12px;color:var(--silver)">
+          📌 <strong style="color:var(--ember)">Como pagar:</strong> Acesse <strong>comptroller.texas.gov</strong> → WebFile → Sales Tax. Você precisa de um Texas Sales Tax Permit (gratuito, solicite no mesmo site).
+        </div>
+      </div>
+    </div>
+
+    <!-- Vendas por Estado / Nexus -->
+    <div class="tax-card">
+      <div class="tc-header">
+        <div>
+          <div class="tc-title blue">🗺️ Vendas por Estado / Nexus</div>
+          <div style="font-size:10px;color:var(--ash);margin-top:2px">Economic nexus: +$100k ou 200 transações num estado</div>
+        </div>
+      </div>
+      <div class="tc-body">
+        <div class="state-list" id="stateList">
+          <div class="empty-note">Sem dados de vendas no período</div>
+        </div>
+        <div style="margin-top:14px;padding:10px 14px;background:rgba(91,156,246,.05);border:1px solid rgba(91,156,246,.15);border-radius:3px;font-size:12px;color:var(--silver)">
+          📌 <strong style="color:var(--blue)">Atenção:</strong> Se ultrapassar $100k em vendas num estado, pode ter obrigação de cobrar sales tax lá também. Informe seu contador.
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Row 2: COGS + Exportações -->
+  <div class="section-grid c2">
+
+    <!-- COGS -->
+    <div class="tax-card">
+      <div class="tc-header">
+        <div>
+          <div class="tc-title gold">📦 COGS — Custo dos Produtos Vendidos</div>
+          <div style="font-size:10px;color:var(--ash);margin-top:2px">Dedutível do imposto de renda · IRS Schedule C / Form 1065</div>
+        </div>
+      </div>
+      <div class="tc-body">
+        <div id="cogsList">
+          <div class="empty-note">Sem dados de vendas no período</div>
+        </div>
+        <div style="margin-top:14px;background:rgba(201,168,76,.05);border:1px solid rgba(201,168,76,.15);border-radius:3px;padding:12px 14px">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <span style="font-size:12px;color:var(--ash)">Total COGS dedutível</span>
+            <span style="font-size:20px;font-weight:700;color:var(--gold);font-family:'Cormorant Garamond',serif" id="cogsTotal">$0</span>
+          </div>
+        </div>
+        <div style="margin-top:10px;padding:10px 14px;background:rgba(201,168,76,.03);border:1px solid rgba(201,168,76,.1);border-radius:3px;font-size:12px;color:var(--silver)">
+          📌 <strong style="color:var(--gold)">Para o IRS:</strong> Guarde todas as notas fiscais e recibos dos fornecedores. O COGS reduz diretamente sua base de cálculo do imposto.
+        </div>
+      </div>
+    </div>
+
+    <!-- Exportações -->
+    <div class="tax-card">
+      <div class="tc-header">
+        <div>
+          <div class="tc-title green">🌎 Exportações & Vendas Internacionais</div>
+          <div style="font-size:10px;color:var(--ash);margin-top:2px">Isentas de US Sales Tax · mas entram na receita do IRS</div>
+        </div>
+      </div>
+      <div class="tc-body">
+        <table class="tax-table">
+          <tr><th>Destino</th><th>Nº Vendas</th><th>Receita (USD)</th><th>Sales Tax</th></tr>
+          <tbody id="exportTable"></tbody>
+        </table>
+        <div style="margin-top:14px;padding:10px 14px;background:rgba(76,175,122,.05);border:1px solid rgba(76,175,122,.15);border-radius:3px;font-size:12px;color:var(--silver)">
+          📌 <strong style="color:var(--green)">Importante:</strong> Exportações são isentas de US Sales Tax, mas toda a receita (incluindo vendas no Brasil) entra na declaração anual do IRS. Declare tudo.
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- IRS Annual Summary -->
+  <div class="tax-card" style="margin-bottom:20px">
+    <div class="tc-header">
+      <div>
+        <div class="tc-title blue">📋 Resumo Anual IRS — Form 1065 (LLC Multi Member)</div>
+        <div style="font-size:10px;color:var(--ash);margin-top:2px">Prazo: 15 de março do ano seguinte · Extensão disponível até setembro</div>
+      </div>
+      <span class="tc-badge" style="background:rgba(91,156,246,.1);color:var(--blue);border:1px solid rgba(91,156,246,.2)">Form 1065</span>
+    </div>
+    <div class="tc-body">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <div>
+          <div class="irs-box">
+            <div class="irs-title">📥 Receitas (Income)</div>
+            <div class="irs-row"><span class="irs-label">Vendas Texas (EUA)</span><span class="irs-val" id="irsVendasTX">$0</span></div>
+            <div class="irs-row"><span class="irs-label">Vendas outros estados</span><span class="irs-val" id="irsVendasOther">$0</span></div>
+            <div class="irs-row"><span class="irs-label">Exportações (intl)</span><span class="irs-val" id="irsExport">$0</span></div>
+            <div class="irs-row highlight"><span class="irs-label">GROSS INCOME TOTAL</span><span class="irs-val" id="irsGross">$0</span></div>
+          </div>
+        </div>
+        <div>
+          <div class="irs-box">
+            <div class="irs-title">📤 Deduções (Deductions)</div>
+            <div class="irs-row"><span class="irs-label">COGS (custo produtos)</span><span class="irs-val" id="irsCogs">$0</span></div>
+            <div class="irs-row"><span class="irs-label">Frete pago</span><span class="irs-val" id="irsFrete">$0</span></div>
+            <div class="irs-row"><span class="irs-label">Outras despesas*</span><span class="irs-val">A lançar</span></div>
+            <div class="irs-row highlight"><span class="irs-label">NET INCOME EST.</span><span class="irs-val" id="irsNet">$0</span></div>
+          </div>
+        </div>
+      </div>
+      <div style="padding:12px 16px;background:rgba(91,156,246,.04);border:1px solid rgba(91,156,246,.1);border-radius:3px;font-size:12px;color:var(--silver);margin-top:4px">
+        * Outras despesas dedutíveis que você deve informar ao contador: aluguel de espaço, software, viagens de negócio, marketing, honorários de advogado/contador, seguro.
+      </div>
+    </div>
+  </div>
+
+  <!-- Relatório para contador -->
+  <div class="tax-card" id="counterReportSection" style="display:none;margin-bottom:20px">
+    <div class="tc-header">
+      <div class="tc-title gold">📄 Relatório para o Contador</div>
+    </div>
+    <div class="tc-body">
+      <div class="report-box" id="counterReportContent"></div>
+      <div style="display:flex;gap:10px;margin-top:14px">
+        <button class="btn-p" onclick="copyReport()">📋 Copiar relatório</button>
+        <button class="btn-p" style="background:var(--steel);color:var(--silver);border:1px solid var(--border)" onclick="window.print()">🖨️ Imprimir</button>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<div class="print-bar">
+  <button class="print-btn" onclick="window.print()">🖨️ Imprimir / Salvar PDF</button>
+</div>
+
+<div class="toast" id="toast">
+  <svg width="14" height="14" fill="none" stroke="#c9a84c" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+  <span id="toastMsg"></span>
+</div>
+
+<script>
+const SUPA_URL = 'https://mibylztsvhhhmnsoipac.supabase.co';
+const SUPA_KEY = 'sb_publishable_a7X5JlFdtqwzaE9bB5TsGg_09zvlle-';
+const supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+const TX_RATE = 0.0825;
+let orders = [];
+let currentQuarter = 0;
+let currentYear = new Date().getFullYear();
+
+// ── Load orders ──
+async function loadOrders() {
+  try {
+    const { data } = await supa.from('orders').select('*').neq('status','cancelado');
+    if (data) orders = data;
+    else orders = JSON.parse(localStorage.getItem('braseiro_orders')||'[]').filter(o=>o.status!=='cancelado');
+  } catch(e) {
+    orders = JSON.parse(localStorage.getItem('braseiro_orders')||'[]').filter(o=>o.status!=='cancelado');
+  }
+  buildAll();
+}
+
+// ── Period filter ──
+function setQuarter(q, btn) {
+  currentQuarter = q;
+  document.querySelectorAll('.pb').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  buildAll();
+}
+
+function getYearOrders() {
+  const yr = parseInt(document.getElementById('yearSel').value);
+  return orders.filter(o => {
+    const d = o.data_pedido || o.dataPedido || '';
+    return d.startsWith(String(yr));
+  });
+}
+
+function getFilteredOrders() {
+  const yr = parseInt(document.getElementById('yearSel').value);
+  let filtered = orders.filter(o => {
+    const d = o.data_pedido || o.dataPedido || '';
+    return d.startsWith(String(yr));
+  });
+  if (currentQuarter === 0) return filtered;
+  const qMonths = { 1:[1,2,3], 2:[4,5,6], 3:[7,8,9], 4:[10,11,12] };
+  return filtered.filter(o => {
+    const d = o.data_pedido || o.dataPedido || '';
+    const month = parseInt((d||'').split('-')[1]);
+    return qMonths[currentQuarter]?.includes(month);
+  });
+}
+
+function getOrderMonth(o) {
+  const d = o.data_pedido || o.dataPedido || '';
+  return parseInt((d||'').split('-')[1]) || 0;
+}
+
+function isTexas(o) {
+  const city = (o.cidade||'').toLowerCase();
+  const pais = (o.pais||'').toLowerCase();
+  return pais === 'eua' && (city.includes('tx') || city.includes('texas') || city.includes('houston') || city.includes('dallas') || city.includes('austin') || city.includes('san antonio'));
+}
+
+function isUSA(o) {
+  const pais = (o.pais||'').toLowerCase();
+  return pais === 'eua' || pais === 'usa' || pais === 'us';
+}
+
+function isExport(o) { return !isUSA(o); }
+
+function fmtUSD(v) { return '$' + (v||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+function fmtBRL(v) { return 'R$ ' + (v||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+
+// ── Build all sections ──
+function buildAll() {
+  currentYear = parseInt(document.getElementById('yearSel').value);
+  const filtered = getFilteredOrders();
+  const yearAll  = getYearOrders();
+
+  buildKPIs(filtered);
+  buildTxTax(yearAll);
+  buildStateList(filtered);
+  buildCOGS(filtered);
+  buildExports(filtered);
+  buildIRS(yearAll);
+}
+
+function buildKPIs(filtered) {
+  const receita  = filtered.reduce((s,o)=>s+(o.total||0),0);
+  const txSales  = filtered.filter(isTexas).reduce((s,o)=>s+(o.total||0),0);
+  const cogs     = filtered.reduce((s,o)=>{
+    return s + (o.items||[]).reduce((ss,it)=>ss+(parseFloat(it.custo||0)*parseInt(it.qtd||1)),0);
+  },0);
+  const exportV  = filtered.filter(isExport).reduce((s,o)=>s+(o.total||0),0);
+
+  document.getElementById('kReceita').textContent = fmtUSD(receita);
+  document.getElementById('kTxTax').textContent   = fmtUSD(txSales * TX_RATE);
+  document.getElementById('kCogs').textContent    = fmtUSD(cogs);
+  document.getElementById('kLucro').textContent   = fmtUSD(receita - cogs);
+  document.getElementById('kExport').textContent  = fmtUSD(exportV);
+}
+
+function buildTxTax(yearOrders) {
+  const quarters = [
+    { label:'Q1 Jan–Mar', months:[1,2,3], due:'Apr 20', q:1 },
+    { label:'Q2 Apr–Jun', months:[4,5,6], due:'Jul 20', q:2 },
+    { label:'Q3 Jul–Sep', months:[7,8,9], due:'Oct 20', q:3 },
+    { label:'Q4 Oct–Dec', months:[10,11,12], due:'Jan 20', q:4 },
+  ];
+  const now = new Date();
+  const curQ = Math.ceil((now.getMonth()+1)/3);
+
+  let totalSales=0, totalTax=0;
+  let qHtml='', tableHtml='';
+
+  quarters.forEach(q => {
+    const qOrders = yearOrders.filter(o => {
+      const m = getOrderMonth(o);
+      return q.months.includes(m) && isTexas(o);
+    });
+    const sales = qOrders.reduce((s,o)=>s+(o.total||0),0);
+    const tax   = sales * TX_RATE;
+    totalSales += sales; totalTax += tax;
+
+    const isPast   = q.q < curQ || currentYear < now.getFullYear();
+    const isCurrent= q.q === curQ && currentYear === now.getFullYear();
+    const statusCls= isPast ? 'qs-paid' : isCurrent ? 'qs-due' : 'qs-future';
+    const statusLbl= isPast ? '✓ Vencido/Pago' : isCurrent ? '⚠️ Due: '+q.due : '⏳ '+q.due;
+
+    qHtml += `<div class="q-box ${currentQuarter===q.q?'active-q':''}" onclick="setQuarter(${q.q},document.querySelectorAll('.pb')[${q.q-1}])">
+      <div class="q-label">${q.label}</div>
+      <div class="q-sales">${fmtUSD(sales)}</div>
+      <div class="q-tax">Tax: ${fmtUSD(tax)}</div>
+      <div class="q-status ${statusCls}">${statusLbl}</div>
+    </div>`;
+
+    tableHtml += `<tr>
+      <td class="td-strong">${q.label}</td>
+      <td class="td-gold">${fmtUSD(sales)}</td>
+      <td>8.25%</td>
+      <td class="td-red">${fmtUSD(tax)}</td>
+      <td><span class="q-status ${statusCls}" style="display:inline-flex">${statusLbl}</span></td>
+    </tr>`;
+  });
+
+  document.getElementById('quarterGrid').innerHTML = qHtml || '<div class="empty-note">Sem vendas no Texas neste período</div>';
+  document.getElementById('txTaxTable').innerHTML  = tableHtml || '<tr><td colspan="5" class="empty-note">Sem vendas no Texas</td></tr>';
+  document.getElementById('txTotalSales').textContent = fmtUSD(totalSales);
+  document.getElementById('txTotalTax').textContent   = fmtUSD(totalTax);
+}
+
+function buildStateList(filtered) {
+  const byState = {};
+  filtered.forEach(o => {
+    const city  = o.cidade||'Não informado';
+    const pais  = o.pais||'';
+    let key, flag, type;
+    if (!isUSA(o)) {
+      key = pais==='Brasil'?'🇧🇷 Brasil':'🌍 '+pais; flag='intl'; type='Exportação';
+    } else {
+      const isTX = isTexas(o);
+      key = isTX ? '🤠 Texas (TX)' : '🇺🇸 '+city;
+      flag = isTX ? 'tx' : 'other'; type = isTX ? 'Sales Tax: 8.25%' : 'Verificar nexus';
+    }
+    if (!byState[key]) byState[key]={sales:0,count:0,flag,type};
+    byState[key].sales += (o.total||0);
+    byState[key].count += 1;
+  });
+
+  const sorted = Object.entries(byState).sort((a,b)=>b[1].sales-a[1].sales);
+  if (sorted.length===0) { document.getElementById('stateList').innerHTML='<div class="empty-note">Sem dados de vendas no período</div>'; return; }
+
+  document.getElementById('stateList').innerHTML = sorted.map(([name,d])=>`
+    <div class="state-row">
+      <div>
+        <div class="state-name">${name}</div>
+        <div class="state-sales">${d.count} venda${d.count>1?'s':''} · ${d.type}</div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:14px;font-weight:700;color:var(--gold)">${fmtUSD(d.sales)}</div>
+        <span class="nexus-badge nb-${d.flag}">${d.flag==='tx'?'TX Tax':'d.flag'==='intl'?'Exportação':'Outro Estado'}</span>
+      </div>
+    </div>`).join('');
+}
+
+function buildCOGS(filtered) {
+  const byProd = {};
+  filtered.forEach(o => {
+    (o.items||[]).forEach(it => {
+      const key = it.codigo||it.nome||'Produto';
+      if (!byProd[key]) byProd[key]={nome:it.nome||it.codigo||'—',cogs:0,qty:0,revenue:0};
+      byProd[key].cogs    += (parseFloat(it.custo||0))*(parseInt(it.qtd||1));
+      byProd[key].qty     += parseInt(it.qtd||1);
+      byProd[key].revenue += (parseFloat(it.valor||0))*(parseInt(it.qtd||1));
+    });
+  });
+
+  const sorted = Object.values(byProd).sort((a,b)=>b.cogs-a.cogs);
+  const totalCogs = sorted.reduce((s,p)=>s+p.cogs,0);
+  const totalRev  = sorted.reduce((s,p)=>s+p.revenue,0);
+
+  if (sorted.length===0) { document.getElementById('cogsList').innerHTML='<div class="empty-note">Sem dados de produtos vendidos</div>'; document.getElementById('cogsTotal').textContent='$0'; return; }
+
+  document.getElementById('cogsList').innerHTML = sorted.slice(0,8).map(p=>`
+    <div class="cogs-row">
+      <div class="cogs-label">${p.nome} <span style="font-size:10px;color:var(--ash)">(${p.qty} un.)</span></div>
+      <div class="cogs-val">${fmtUSD(p.cogs)}</div>
+      <div class="cogs-pct">${totalRev>0?Math.round(p.cogs/totalRev*100):0}%</div>
+    </div>`).join('');
+  document.getElementById('cogsTotal').textContent = fmtUSD(totalCogs);
+}
+
+function buildExports(filtered) {
+  const byDest = {};
+  filtered.forEach(o => {
+    if (!isUSA(o)) {
+      const dest = o.pais||'Internacional';
+      if (!byDest[dest]) byDest[dest]={count:0,total:0};
+      byDest[dest].count++;
+      byDest[dest].total += (o.total||0);
+    }
+  });
+
+  const usaOther = filtered.filter(o=>isUSA(o)&&!isTexas(o));
+  const usaOtherTotal = usaOther.reduce((s,o)=>s+(o.total||0),0);
+
+  let html = '';
+  if (usaOtherTotal > 0) {
+    html += `<tr><td class="td-strong">🇺🇸 Outros estados EUA</td><td>${usaOther.length}</td><td class="td-gold">${fmtUSD(usaOtherTotal)}</td><td class="td-blue">Verificar nexus</td></tr>`;
+  }
+  Object.entries(byDest).forEach(([dest,d])=>{
+    const flag = dest==='Brasil'?'🇧🇷':dest==='EUA'?'🇺🇸':'🌍';
+    html += `<tr><td class="td-strong">${flag} ${dest}</td><td>${d.count}</td><td class="td-gold">${fmtUSD(d.total)}</td><td class="td-green">Isento US Tax</td></tr>`;
+  });
+
+  document.getElementById('exportTable').innerHTML = html || '<tr><td colspan="4" class="empty-note">Nenhuma exportação no período</td></tr>';
+}
+
+function buildIRS(yearOrders) {
+  const txSales    = yearOrders.filter(isTexas).reduce((s,o)=>s+(o.total||0),0);
+  const otherUS    = yearOrders.filter(o=>isUSA(o)&&!isTexas(o)).reduce((s,o)=>s+(o.total||0),0);
+  const exportVal  = yearOrders.filter(isExport).reduce((s,o)=>s+(o.total||0),0);
+  const gross      = txSales + otherUS + exportVal;
+  const cogs       = yearOrders.reduce((s,o)=>{
+    return s + (o.items||[]).reduce((ss,it)=>ss+(parseFloat(it.custo||0)*parseInt(it.qtd||1)),0);
+  },0);
+  const frete      = yearOrders.reduce((s,o)=>s+(parseFloat(o.frete)||0),0);
+  const net        = gross - cogs - frete;
+
+  document.getElementById('irsVendasTX').textContent    = fmtUSD(txSales);
+  document.getElementById('irsVendasOther').textContent = fmtUSD(otherUS);
+  document.getElementById('irsExport').textContent      = fmtUSD(exportVal);
+  document.getElementById('irsGross').textContent       = fmtUSD(gross);
+  document.getElementById('irsCogs').textContent        = fmtUSD(cogs);
+  document.getElementById('irsFrete').textContent       = fmtUSD(frete);
+  document.getElementById('irsNet').textContent         = fmtUSD(net);
+}
+
+// ── Generate counter report ──
+function generateCounterReport() {
+  const yr = currentYear;
+  const yearOrders = getYearOrders();
+  const filtered   = getFilteredOrders();
+
+  const gross    = yearOrders.reduce((s,o)=>s+(o.total||0),0);
+  const txSales  = yearOrders.filter(isTexas).reduce((s,o)=>s+(o.total||0),0);
+  const otherUS  = yearOrders.filter(o=>isUSA(o)&&!isTexas(o)).reduce((s,o)=>s+(o.total||0),0);
+  const exportV  = yearOrders.filter(isExport).reduce((s,o)=>s+(o.total||0),0);
+  const cogs     = yearOrders.reduce((s,o)=>s+(o.items||[]).reduce((ss,it)=>ss+(parseFloat(it.custo||0)*parseInt(it.qtd||1)),0),0);
+  const frete    = yearOrders.reduce((s,o)=>s+(parseFloat(o.frete)||0),0);
+  const txTax    = txSales * TX_RATE;
+  const net      = gross - cogs - frete;
+
+  const quarters = [[1,2,3],[4,5,6],[7,8,9],[10,11,12]];
+  let qLines = '';
+  quarters.forEach((months,i)=>{
+    const qSales = yearOrders.filter(o=>{
+      const m=getOrderMonth(o); return months.includes(m)&&isTexas(o);
+    }).reduce((s,o)=>s+(o.total||0),0);
+    qLines += `  Q${i+1}: Texas Sales = ${fmtUSD(qSales)} | Tax Due (8.25%) = ${fmtUSD(qSales*TX_RATE)}\n`;
+  });
+
+  const report = `
+════════════════════════════════════════════════════
+  BRASEIRO PREMIUM KNIVES LLC
+  RELATÓRIO FISCAL ${yr} — PARA O CONTADOR (CPA)
+════════════════════════════════════════════════════
+
+ENTIDADE: Braseiro Premium Knives LLC (Multi Member)
+PERÍODO:  01/01/${yr} – 31/12/${yr}
+GERADO:   ${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTimeString('pt-BR')}
+
+════════════════════════════════════════════════════
+  RESUMO DE RECEITAS (GROSS INCOME)
+════════════════════════════════════════════════════
+
+  Vendas no Texas (EUA)         ${fmtUSD(txSales).padStart(14)}
+  Vendas outros estados EUA     ${fmtUSD(otherUS).padStart(14)}
+  Exportações internacionais    ${fmtUSD(exportV).padStart(14)}
+  ─────────────────────────────────────────────
+  TOTAL GROSS INCOME            ${fmtUSD(gross).padStart(14)}
+
+════════════════════════════════════════════════════
+  TEXAS SALES TAX (comptroller.texas.gov)
+════════════════════════════════════════════════════
+
+  Total Vendas Tributáveis TX   ${fmtUSD(txSales).padStart(14)}
+  Tax Rate                                  8.25%
+  TOTAL TAX DUE (ano)           ${fmtUSD(txTax).padStart(14)}
+
+  Detalhamento por trimestre:
+${qLines}
+════════════════════════════════════════════════════
+  DEDUÇÕES (DEDUCTIONS)
+════════════════════════════════════════════════════
+
+  COGS (custo dos produtos)     ${fmtUSD(cogs).padStart(14)}
+  Frete cobrado (pass-through)  ${fmtUSD(frete).padStart(14)}
+  Outras despesas               A informar ao CPA
+  ─────────────────────────────────────────────
+  NET INCOME ESTIMADO           ${fmtUSD(net).padStart(14)}
+
+════════════════════════════════════════════════════
+  FORM 1065 — LLC MULTI MEMBER
+════════════════════════════════════════════════════
+
+  • Prazo: 15 de março de ${yr+1}
+  • Extensão possível até setembro de ${yr+1}
+  • Emitir Schedule K-1 para cada membro
+  • Receita internacional deve ser declarada
+  • Manter documentação de exportações
+
+════════════════════════════════════════════════════
+  OBSERVAÇÕES IMPORTANTES
+════════════════════════════════════════════════════
+
+  1. Vendas internacionais (Brasil/outros) são isentas
+     de US Sales Tax mas ENTRAM no Form 1065.
+
+  2. Verificar economic nexus em outros estados EUA
+     se ultrapassar $100k em vendas num estado.
+
+  3. Guardar todas as notas fiscais de fornecedores
+     para comprovar COGS junto ao IRS.
+
+  4. Se houve importação de produtos do Brasil,
+     custos de importação também são dedutíveis.
+
+════════════════════════════════════════════════════
+  DADOS GERADOS PELO SISTEMA BRASEIRO
+  Este relatório é auxiliar — não substitui CPA
+════════════════════════════════════════════════════
+`;
+
+  document.getElementById('counterReportContent').textContent = report;
+  document.getElementById('counterReportSection').style.display = 'block';
+  document.getElementById('counterReportSection').scrollIntoView({behavior:'smooth'});
+  showToast('Relatório gerado! Copie ou imprima para o contador.');
+}
+
+function copyReport() {
+  const content = document.getElementById('counterReportContent').textContent;
+  navigator.clipboard.writeText(content).then(()=>showToast('Relatório copiado!'));
+}
+
+function showToast(msg, err=false) {
+  document.getElementById('toastMsg').textContent = msg;
+  const t = document.getElementById('toast');
+  t.style.borderColor = err?'#c44a1a':'#c9a84c';
+  t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3200);
+}
+
+// Init
+document.getElementById('yearSel').value = new Date().getFullYear();
+loadOrders();
+</script>
+</body>
+</html>
