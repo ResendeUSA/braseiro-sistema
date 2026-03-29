@@ -1,18 +1,23 @@
 {
   "name": "Braseiro Premium Knives",
   "short_name": "Braseiro",
-  "description": "Sistema de Gestão — Braseiro Premium Knives",
-  "start_url": "/braseiro-sistema/index.html",
+  "description": "Sistema de Gestão",
+  "start_url": "https://resendeusa.github.io/braseiro-sistema/index.html",
+  "scope": "https://resendeusa.github.io/braseiro-sistema/",
   "display": "standalone",
   "background_color": "#0a0a0a",
   "theme_color": "#0a0a0a",
-  "orientation": "portrait",
   "icons": [
     {
-      "src": "Braseiro-AppIcon.png",
+      "src": "https://resendeusa.github.io/braseiro-sistema/Braseiro-AppIcon.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
+    },
+    {
+      "src": "https://resendeusa.github.io/braseiro-sistema/Braseiro-AppIcon.png",
+      "sizes": "192x192",
+      "type": "image/png"
     }
   ]
 }
